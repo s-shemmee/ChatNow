@@ -1,44 +1,185 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+$font-family: 'Poppins';
+$primary-color: #5b62f9;
+$secondary-color: #414141;
+$background-gradient: radial-gradient(at 62% 31%, hsla(236, 90%, 67%, 1) 0px, transparent 50%),
+                    radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
+                    radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%),
+                    radial-gradient(at 97% 38%, hsla(227, 97%, 73%, 1) 0px, transparent 50%),
+                    radial-gradient(at 90% 9%, hsla(222, 90%, 63%, 1) 0px, transparent 50%),
+                    radial-gradient(at 87% 15%, hsla(238, 95%, 75%, 1) 0px, transparent 50%),
+                    radial-gradient(at 12% 83%, hsla(355, 99%, 62%, 1) 0px, transparent 50%);
+
+:root {
+  font-family: $font-family;
+  background-color: #c999ff;
+  background-image: $background-gradient;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-
-  &:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-
-  &.react:hover {
-    filter: drop-shadow(0 0 2em #61dafbaa);
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $font-family;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.loginForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 30px;
+  width: 500px;
+  background-color: whitesmoke;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    img {
+      height: 50px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bolder;
+      color: #333;
+
+      span {
+        color: $primary-color;
+      }
+    }
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
 
-.read-the-docs {
-  color: #888;
+    h2 {
+      font-size: 2rem;
+      font-weight: 400;
+      color: $primary-color;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: $secondary-color;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .formGroup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 70%;
+      margin-bottom: 15px;
+
+      label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: $secondary-color;
+        margin-bottom: 10px;
+        text-align: left;
+      }
+
+      .inputGroup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        border: 1px solid $secondary-color;
+        border-radius: 5px;
+        padding: 10px;
+
+        input {
+          width: 100%;
+          border: none;
+          outline: none;
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: $secondary-color;
+          background-color: transparent;
+
+          &::placeholder {
+            font-size: 1rem;
+            font-weight: 500;
+            color: $secondary-color;
+          }
+        }
+
+        .inputIcon {
+          font-size: 1.3rem;
+          color: $secondary-color;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    button {
+      width: 30%;
+      border: none;
+      outline: none;
+      background-color: $primary-color;
+      color: whitesmoke;
+      font-size: 1.2rem;
+      font-weight: 500;
+      padding: 10px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      margin: 20px 0;
+
+      &:hover {
+        background-color: $secondary-color;
+      }
+    }
+
+    span {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: $secondary-color;
+      margin-top: 10px;
+
+      a {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: 600;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }
