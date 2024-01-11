@@ -36,8 +36,8 @@ const Login: React.FC = () => {
   return (
     <div className="loginForm">
       <div className="logo">
-        <img src={logo} alt="" />
         <h1>Chat<span>Now</span></h1>
+        <img src={logo} alt="" />
       </div>
       <div className="heading">
         <h2>Sign in</h2>
