@@ -1,5 +1,5 @@
 $font-family: 'Poppins', sans-serif;
-$primary-color: #5b62f9;
+$primary-color: #9474f4;
 $secondary-color: #5e5e5e;
 $background-gradient: radial-gradient(at 62% 31%, hsla(236, 90%, 67%, 1) 0px, transparent 50%),
                     radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
@@ -34,7 +34,7 @@ body {
   justify-content: center;
 }
 
-.loginForm {
+.loginForm, .registerForm {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,11 +51,12 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 
     img {
       height: 40px;
-      margin-right: 10px;
+      margin-bottom: 50px;
+      margin-left: 10px;
     }
 
     h1 {
@@ -74,13 +75,13 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 
     h2 {
       font-size: 2rem;
       font-weight: 600;
       color: $primary-color;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     p {
@@ -145,7 +146,7 @@ body {
 
         .inputIcon {
           font-size: 1rem;
-          color: $secondary-color;
+          color: $primary-color;
         }
       }
     }
@@ -211,7 +212,7 @@ body {
       margin: 20px 0;
 
       &:hover {
-        background-color: $secondary-color;
+        background-color: #8965f5;
       }
     }
 
