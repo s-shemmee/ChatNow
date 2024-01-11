@@ -1,6 +1,6 @@
-$font-family: 'Poppins';
+$font-family: 'Poppins', sans-serif;
 $primary-color: #5b62f9;
-$secondary-color: #414141;
+$secondary-color: #5e5e5e;
 $background-gradient: radial-gradient(at 62% 31%, hsla(236, 90%, 67%, 1) 0px, transparent 50%),
                     radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
                     radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%),
@@ -39,28 +39,28 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 30px;
+  padding: 40px 20px;
   width: 500px;
-  background-color: whitesmoke;
+  background-color: #f1f1f1;
   border-radius: 30px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   overflow: hidden;
 
   .logo {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 
     img {
-      height: 50px;
-      margin-bottom: 10px;
+      height: 40px;
+      margin-right: 10px;
     }
 
     h1 {
       font-size: 3rem;
-      font-weight: bolder;
+      font-weight: 700;
       color: #333;
 
       span {
@@ -78,13 +78,13 @@ body {
 
     h2 {
       font-size: 2rem;
-      font-weight: 400;
+      font-weight: 600;
       color: $primary-color;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
     p {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 500;
       color: $secondary-color;
     }
@@ -100,14 +100,17 @@ body {
     .formGroup {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      width: 70%;
-      margin-bottom: 15px;
+      width: 80%;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      border-radius: 20px;
+      padding: 15px;
 
       label {
-        font-size: 1.2rem;
-        font-weight: bold;
+        font-size: 1rem;
+        font-weight: 600;
         color: $secondary-color;
         margin-bottom: 10px;
         text-align: left;
@@ -118,44 +121,91 @@ body {
         align-items: center;
         justify-content: center;
         width: 100%;
-        border: 1px solid $secondary-color;
-        border-radius: 20px;
-        padding: 10px;
+        border: none;
+        outline: none;
+        background-color: transparent;
 
         input {
           width: 100%;
           border: none;
           outline: none;
-          font-size: 1.2rem;
+          font-size: 1rem;
           font-weight: 500;
           color: $secondary-color;
           background-color: transparent;
+          margin-left: 10px;
 
           &::placeholder {
             font-size: 1rem;
             font-weight: 500;
             color: $secondary-color;
+            font-style: italic;
           }
         }
 
         .inputIcon {
-          font-size: 1.3rem;
+          font-size: 1rem;
           color: $secondary-color;
+        }
+      }
+    }
+
+    .remember_forget {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 80%;       
+      margin: 10px auto;
+
+      .formCheckbox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .checkbox {
+          width: 15px;
+          height: 15px;
+          border: 1px solid $secondary-color;
+          border-radius: 5px;
           margin-right: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            border: 1px solid $primary-color;
+          }
+
+          input {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+          }
+        }
+      }
+      
+      .forgetPassword {
+        font-size: 1rem;
+        font-weight: 500;
+        color: $primary-color;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
 
     button {
-      width: 30%;
+      width: 80%;
       border: none;
       outline: none;
       background-color: $primary-color;
-      color: whitesmoke;
+      color: #fafafa;
       font-size: 1.2rem;
       font-weight: 500;
-      padding: 10px;
-      border-radius: 20px;
+      padding: 1rem;
+      border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s ease-in-out;
       margin: 20px 0;
@@ -166,7 +216,7 @@ body {
     }
 
     span {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 500;
       color: $secondary-color;
       margin-top: 10px;
@@ -177,7 +227,7 @@ body {
         font-weight: 600;
 
         &:hover {
-          text-decoration: underline;
+          text-decoration: none;
         }
       }
     }

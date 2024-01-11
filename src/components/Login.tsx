@@ -40,19 +40,19 @@ const Login: React.FC = () => {
         <h1>Chat<span>Now</span></h1>
       </div>
       <div className="heading">
-        <h2>Login</h2>
-        <p>Welcome back! Please login to your account.</p>
+        <h2>Sign in</h2>
+        <p>Welcome back! Please sign in to your account.</p>
       </div>
       <form onSubmit={handleLogin}>
         {/* Email Input */}
         <div className="formGroup">
-          <label htmlFor="email">Email Address</label>
+          <label htmlFor="email">Email</label>
           <div className="inputGroup">
             <MailOutlineRoundedIcon className="inputIcon" />
             <input
               type="email"
               name="email"
-              placeholder="your.email@example.com"
+              placeholder="name@example.com"
               value={email}
               required
               onChange={(e) => setEmail(e.target.value)}
@@ -89,15 +89,24 @@ const Login: React.FC = () => {
             <p>Please enter your email and password.</p>
           </div>
         ) : null}*/}
+          
+        {/* Remember Me & Forget Password */}
+        <div className="remember_forget">
+          <div className="formCheckbox">
+            <input type="checkbox" id="checkbox" className="checkbox" name="checkbox" />
+            <label htmlFor="rememberMe">Remember me</label>
+          </div>
+          <a href="" className="forgetPassword">Forget password?</a>
+        </div>
 
         {/* Submit Button */}
         <button className="formButton" type="submit">
-          Login
+          Sign in
         </button>
 
         {/* Sign Up Link */}
         <span>
-          You don't have an account? <a href="">Sign up</a>
+          Don’t have an account yet? <a href="">Sign up</a>
         </span>
       </form>
     </div>
