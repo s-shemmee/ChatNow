@@ -1,11 +1,11 @@
-import Login from './components/Login'
+import Register from './components/Register'
 import './App.scss'
 
 function App() {
 
   return (
     <>
-      <Login />
+      <Register />
     </>
   )
 }
