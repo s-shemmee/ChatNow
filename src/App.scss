@@ -234,3 +234,84 @@ body {
     }
   }
 }
+
+
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 70vw;
+  height: 800px;
+  background-color: #f3f3f9;
+  border-radius: 30px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+
+  .sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    background-color: #fff;
+    width: 60px;
+    height: 100%;
+    padding: 20px 5px;
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        height: 30px;
+      }
+    }
+
+    .sidebarMenu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+
+      .menuIcon {
+        font-size: 1.5rem;
+        color: $primary-color;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          color: #7247f3;
+        }
+      }
+
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+
+      .userIcon {
+        font-size: 1.5rem;
+        color: $primary-color;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          color: #7247f3;
+        }
+      }
+
+      .userImg {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid $primary-color;
+        object-fit: cover;
+      }
+    }
+  }
+}
