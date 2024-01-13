@@ -1,20 +1,24 @@
-$font-family: 'Poppins', sans-serif;
+$font-family: "Poppins", sans-serif;
 $primary-color: #9474f4;
 $secondary-color: #5e5e5e;
-$background-gradient: radial-gradient(at 62% 31%, hsla(236, 90%, 67%, 1) 0px, transparent 50%),
-                    radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
-                    radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%),
-                    radial-gradient(at 97% 38%, hsla(227, 97%, 73%, 1) 0px, transparent 50%),
-                    radial-gradient(at 90% 9%, hsla(222, 90%, 63%, 1) 0px, transparent 50%),
-                    radial-gradient(at 87% 15%, hsla(238, 95%, 75%, 1) 0px, transparent 50%),
-                    radial-gradient(at 12% 83%, hsla(355, 99%, 62%, 1) 0px, transparent 50%);
+$background-gradient: radial-gradient(
+    at 62% 31%,
+    hsla(236, 90%, 67%, 1) 0px,
+    transparent 50%
+  ),
+  radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
+  radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%),
+  radial-gradient(at 97% 38%, hsla(227, 97%, 73%, 1) 0px, transparent 50%),
+  radial-gradient(at 90% 9%, hsla(222, 90%, 63%, 1) 0px, transparent 50%),
+  radial-gradient(at 87% 15%, hsla(238, 95%, 75%, 1) 0px, transparent 50%),
+  radial-gradient(at 12% 83%, hsla(355, 99%, 62%, 1) 0px, transparent 50%);
 
 $accent-color-1: #f3f3f9; // Background color for forms
-$accent-color-2: #fff;     // Background color for form elements
-$accent-color-3: #f2efff;  // Background color for chats
-$accent-color-4: #f4f4fa;  // Background color for chat main section
-$online-color: #00ff00;  // Online status color
-$offline-color: #ff0000;  // Offline status color
+$accent-color-2: #fff; // Background color for form elements
+$accent-color-3: #f2efff; // Background color for chats
+$accent-color-4: #f4f4fa; // Background color for chat main section
+$online-color: #00ff00; // Online status color
+$offline-color: #ff0000; // Offline status color
 
 :root {
   font-family: $font-family;
@@ -41,7 +45,8 @@ body {
   justify-content: center;
 }
 
-.loginForm, .registerForm {
+.loginForm,
+.registerForm {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,7 +167,7 @@ body {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 80%;       
+      width: 80%;
       margin: 10px auto;
 
       .formCheckbox {
@@ -191,7 +196,7 @@ body {
           }
         }
       }
-      
+
       .forgetPassword {
         font-size: 1rem;
         font-weight: 500;
@@ -242,7 +247,6 @@ body {
   }
 }
 
-
 .home {
   display: flex;
   align-items: center;
@@ -263,7 +267,7 @@ body {
     width: 60px;
     height: 100%;
     padding: 20px 5px;
-    
+
     .logo {
       display: flex;
       align-items: center;
@@ -291,7 +295,6 @@ body {
           color: #7247f3;
         }
       }
-
     }
 
     .user {
@@ -327,7 +330,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: 30%;
+    width: 25%;
     background-color: #f2efff;
     height: 100%;
     padding: 20px 10px;
@@ -378,7 +381,7 @@ body {
       margin-top: 20px;
       gap: 15px;
 
-      .chat {
+      .chatCard {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -405,14 +408,14 @@ body {
             }
           }
         }
-        
+
         .chatUser {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
           flex-direction: row;
-          
+
           .chatImg {
             width: 60px;
             height: 60px;
@@ -434,13 +437,13 @@ body {
             justify-content: center;
             flex-direction: column;
             gap: 10px;
-  
+
             .chatName {
               font-size: 1rem;
               font-weight: 600;
               color: $primary-color;
             }
-  
+
             .chatMsg {
               font-size: 0.8rem;
               font-weight: 500;
@@ -456,15 +459,23 @@ body {
     }
   }
 
-  .chatMain {
+  .chat {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: row;
-    width: 70%;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 50%;
     height: 100%;
-    overflow: hidden;
     background-color: #f4f4fa;
+    padding: 20px 10px;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
     .chatHeader {
       display: flex;
@@ -472,9 +483,10 @@ body {
       justify-content: space-between;
       width: 100%;
       height: 80px;
-      background-color: $primary-color;
-      color: #f4f4fa;
+      background-color: #fff;
+      border-radius: 20px;
       padding: 10px 20px;
+      margin-bottom: 20px;
 
       .chatUser {
         display: flex;
@@ -482,12 +494,12 @@ body {
         justify-content: center;
         gap: 10px;
         flex-direction: row;
-        
+
         .chatImg {
           width: 60px;
           height: 60px;
           border-radius: 50%;
-          border: 2px solid #f4f4fa;
+          border: 2px solid $primary-color;
           object-fit: cover;
 
           &.online {
@@ -508,12 +520,13 @@ body {
           .chatName {
             font-size: 1rem;
             font-weight: 600;
-            color: #333;
+            color: $primary-color;
           }
 
           .chatStatus {
             font-size: 0.8rem;
             font-weight: 500;
+            color: $secondary-color;
           }
         }
       }
@@ -526,12 +539,98 @@ body {
 
         .chatAction {
           font-size: 1.5rem;
-          color: #f4f4fa;
+          color: $primary-color;
           cursor: pointer;
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #f4f4fa;
+            color: #7247f3;
+          }
+        }
+      }
+    }
+
+    .chatInput {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 20px 10px;
+
+      form {
+        width: 100%;
+      }
+
+      .inputBase {
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        font-size: 1rem;
+        font-weight: 500;
+        color: $secondary-color;
+        margin-left: 10px;
+
+        &::placeholder {
+          font-size: 1rem;
+          font-weight: 500;
+          color: $secondary-color;
+          font-style: italic;
+        }
+      }
+
+      .chatIcons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        gap: 10px;
+        width: 100%;
+
+        .chatOptions {
+          cursor: pointer;
+
+          .chatIcon {
+            font-size: 1.5rem;
+            color: $primary-color;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              color: #7247f3;
+            }
+          }
+        }
+
+        .chatSend {
+          cursor: pointer;
+
+          .chatIcon {
+            font-size: 1.5rem;
+            color: $primary-color;
+            transition: all 0.3s ease-in-out;
+            margin-right: 5px;
+
+            &:hover {
+              color: #7247f3;
+            }
+          }
+
+          .chatIconSend {
+            font-size: 2rem;
+            color: #fff;
+            background-color: $primary-color;
+            border-radius: 50%;
+
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              background-color: #7247f3;
+            }
           }
         }
       }
