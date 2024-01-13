@@ -12,7 +12,7 @@ const Chats:React.FC = () => {
 
       {/* chats*/}
       <div className="chatsContainer">
-        <div className="chat">
+        <div className="chatCard">
           <div className="chatUser">
             <img src="https://picsum.photos/200" alt="" className="chatImg"/>
             <div className="chatInfo">
@@ -24,7 +24,7 @@ const Chats:React.FC = () => {
             1:00pm
           </span>
         </div>
-        <div className="chat">
+        <div className="chatCard">
           <div className="chatUser">
             <img src="https://picsum.photos/200" alt="" className="chatImg"/>
             <div className="chatInfo">
@@ -36,7 +36,7 @@ const Chats:React.FC = () => {
             1:00pm
           </span>
         </div>
-        <div className="chat">
+        <div className="chatCard">
           <div className="chatUser">
             <img src="https://picsum.photos/200" alt="" className="chatImg"/>
             <div className="chatInfo">
