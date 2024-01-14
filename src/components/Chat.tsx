@@ -6,6 +6,9 @@ const Chat:React.FC = () => {
   return (
     <div className="chat">
       <ChatHeader />
+      <div className="chatMessages">
+        <p>Messages will go here</p>
+      </div>
       <ChatInput />
     </div>
   );
