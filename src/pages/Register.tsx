@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
@@ -8,6 +9,8 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState(""); 
@@ -28,6 +31,9 @@ const Register: React.FC = () => {
     setEmail("");
     setAvatar("");
     setPassword("");
+
+    // Redirect to the home page after successful registration
+    navigate("/home");
   };
 
   const togglePasswordVisibility = () => {
@@ -118,13 +124,13 @@ const Register: React.FC = () => {
         </div>
         
         {/* Submit Button */}
-        <button className="formButton" type="submit">
+        <button className="formButton" type="submit" onClick={handleRegister}>
           Sign up
         </button>
 
         {/* Already have an account Link */}
         <span>
-          Already have an account? <a href="">Sign in</a>
+          Already have an account? <a href="/login">Sign in</a>
         </span>
       </form>
     </div>
