@@ -33,7 +33,7 @@ const Login: React.FC = () => {
   };
 
   //Redirect to the home page after successful Login
-  navigate("/");
+  navigate("/home");
 
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
