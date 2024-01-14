@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -7,6 +8,9 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 // Define the Login component
 const Login: React.FC = () => {
+  // Define the navigate function
+  const navigate = useNavigate();
+
   // State to manage input values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +31,9 @@ const Login: React.FC = () => {
     setEmail("");
     setPassword("");
   };
+
+  //Redirect to the home page after successful Login
+  navigate("/");
 
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
@@ -100,13 +107,13 @@ const Login: React.FC = () => {
         </div>
 
         {/* Submit Button */}
-        <button className="formButton" type="submit">
+        <button className="formButton" type="submit" onClick={handleLogin}>
           Sign in
         </button>
 
         {/* Sign Up Link */}
         <span>
-          Don’t have an account yet? <a href="">Sign up</a>
+          Don’t have an account yet? <a href="/">Sign up</a>
         </span>
       </form>
     </div>
