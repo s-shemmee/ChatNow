@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -9,31 +11,38 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 
 const Register: React.FC = () => {
-  const navigate = useNavigate();
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState(""); 
+  const [avatar, setAvatar] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Add registration logic here (e.g., call your authentication API)
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Avatar:", avatar);
-    console.log("Password:", password);
+    // Register the user
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(userCredential);
+      // Get a reference to the created user
+      const user = userCredential.user;
+      localStorage.setItem('token', user.accessToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Redirect to the home page after successful registration
+      navigate("/");
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
 
     // Clear input fields after submission (optional)
     setUsername("");
     setEmail("");
     setAvatar("");
     setPassword("");
-
-    // Redirect to the home page after successful registration
-    navigate("/home");
   };
 
   const togglePasswordVisibility = () => {
@@ -58,7 +67,9 @@ const Register: React.FC = () => {
             <AccountCircleOutlinedIcon className="inputIcon" />
             <input
               type="text"
+              id="username"
               name="username"
+              autoComplete="username"
               placeholder="Your username"
               value={username}
               required
@@ -74,8 +85,10 @@ const Register: React.FC = () => {
             <MailOutlineRoundedIcon className="inputIcon" />
             <input
               type="email"
+              id="email"
               name="email"
               placeholder="name@example.com"
+              autoComplete="email"
               value={email}
               required
               onChange={(e) => setEmail(e.target.value)}
@@ -90,10 +103,12 @@ const Register: React.FC = () => {
             <HttpsOutlinedIcon className="inputIcon" />
             <input
               type={isPasswordVisible ? "text" : "password"}
+              id="password"
               name="password"
               placeholder="********"
               value={password}
               required
+              autoComplete="new-password"
               onChange={(e) => setPassword(e.target.value)}
             />
             <div className="show_hide" onClick={togglePasswordVisibility}>
@@ -115,6 +130,7 @@ const Register: React.FC = () => {
             <AddPhotoAlternateRoundedIcon className="inputIcon" />
             <input
               type="file"
+              id="avatar"
               name="avatar"
               placeholder="Your avatar"
               value={avatar}
@@ -122,15 +138,15 @@ const Register: React.FC = () => {
             />
           </div>
         </div>
-        
+
         {/* Submit Button */}
-        <button className="formButton" type="submit" onClick={handleRegister}>
+        <button className="formButton" type="submit">
           Sign up
         </button>
 
         {/* Already have an account Link */}
         <span>
-          Already have an account? <a href="/login">Sign in</a>
+          Already have an account? <Link to="/login">Sign in</Link>
         </span>
       </form>
     </div>
