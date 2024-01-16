@@ -283,9 +283,9 @@ body {
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 20px;
+      gap: 10px;
 
-      .menuIcon {
+      .sidebarIcon {
         font-size: 1.5rem;
         color: $primary-color;
         cursor: pointer;
@@ -297,14 +297,14 @@ body {
       }
     }
 
-    .user {
+    .sidebarUser {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 10px;
+      gap: 20px;
 
-      .userIcon {
+      .userSignOut {
         font-size: 1.5rem;
         color: $primary-color;
         cursor: pointer;
