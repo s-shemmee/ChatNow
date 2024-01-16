@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { auth } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
@@ -8,34 +10,36 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 // Define the Login component
 const Login: React.FC = () => {
-  // Define the navigate function
-  const navigate = useNavigate();
-
-  // State to manage input values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // State to manage password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  // Function to handle form submission
-  const handleLogin = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Add authentication logic here (e.g., Firebase authentication)
-    // For demonstration purposes, log the entered email and password
-    console.log("Email:", email);
-    console.log("Password:", password);
+    // Register the user
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log(userCredential);
+      // Get a reference to the created user
+      const user = userCredential.user;
+      localStorage.setItem('token', user.accessToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Redirect to the home page after successful Login
+      navigate("/");
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
 
     // Clear input fields after submission (optional)
     setEmail("");
     setPassword("");
   };
 
-  //Redirect to the home page after successful Login
-  navigate("/home");
-
-  // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -58,7 +62,9 @@ const Login: React.FC = () => {
             <MailOutlineRoundedIcon className="inputIcon" />
             <input
               type="email"
+              id="email"
               name="email"
+              autoComplete="email"
               placeholder="name@example.com"
               value={email}
               required
@@ -74,7 +80,9 @@ const Login: React.FC = () => {
             <HttpsOutlinedIcon className="inputIcon" />
             <input
               type={isPasswordVisible ? "text" : "password"}
+              id="password"
               name="password"
+              autoComplete="current-password"
               placeholder="********"
               value={password}
               required
@@ -90,30 +98,23 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        {/* Display error message if email or password is empty 
-        {!email || !password ? (
-          <div className="error">
-            <p>Please enter your email and password.</p>
-          </div>
-        ) : null}*/}
-          
         {/* Remember Me & Forget Password */}
         <div className="remember_forget">
           <div className="formCheckbox">
-            <input type="checkbox" id="checkbox" className="checkbox" name="checkbox" />
+            <input type="checkbox" id="rememberMe" className="checkbox" name="rememberMe" />
             <label htmlFor="rememberMe">Remember me</label>
           </div>
-          <a href="" className="forgetPassword">Forget password?</a>
+          <Link to="/forgot-password" className="forgetPassword">Forget password?</Link>
         </div>
 
         {/* Submit Button */}
-        <button className="formButton" type="submit" onClick={handleLogin}>
+        <button className="formButton" type="submit">
           Sign in
         </button>
 
         {/* Sign Up Link */}
         <span>
-          Don’t have an account yet? <a href="/">Sign up</a>
+          Don’t have an account yet? <Link to="/register">Sign up</Link>
         </span>
       </form>
     </div>
