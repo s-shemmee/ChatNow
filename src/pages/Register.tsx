@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { auth } from "../firebase";
+import { app, auth } from "../firebase"; 
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -19,32 +20,41 @@ const Register: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const database = getDatabase(app);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Register the user
+  
     try {
+      // Register the user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
-      // Get a reference to the created user
       const user = userCredential.user;
+  
+      // Store additional user data in the Realtime Database
+      await set(ref(database, `users/${user.uid}`), {
+        username,
+        email,
+        avatar,
+      });
+  
+      // Save token and user data in localStorage
       localStorage.setItem('token', user.accessToken);
       localStorage.setItem('user', JSON.stringify(user));
-
+  
       // Redirect to the home page after successful registration
       navigate("/");
-
+  
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error: chi haja mahiyach', error);
     }
-
+  
     // Clear input fields after submission (optional)
     setUsername("");
     setEmail("");
     setAvatar("");
     setPassword("");
   };
-
+  
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
