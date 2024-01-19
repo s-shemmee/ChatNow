@@ -75,15 +75,23 @@ const Chat: React.FC = () => {
             className="Menu"
           >
             <MenuItem onClick={handleMenuClose}>
-              <NotificationsOffRoundedIcon />
+              <IconButton>
+                <NotificationsOffRoundedIcon className="chatAction" />
+              </IconButton>
               Mute Chat
             </MenuItem>
+
             <MenuItem onClick={handleMenuClose}>
-              <ArchiveRoundedIcon />
+              <IconButton>
+                <ArchiveRoundedIcon className="chatAction" />
+              </IconButton>
               Archive Chat
             </MenuItem>
+
             <MenuItem onClick={handleMenuClose}>
-              <DeleteRoundedIcon />
+              <IconButton>
+                <DeleteRoundedIcon className="chatAction" />
+              </IconButton>
               Delete Chat
             </MenuItem>
           </Menu>
