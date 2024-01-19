@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { IconButton } from "@mui/material";
 
 const Chat: React.FC = () => {
   const [isFlagFilled, setIsFlagFilled] = useState(false);
@@ -36,7 +37,7 @@ const Chat: React.FC = () => {
         <div className="chatUser">
           <img src="https://picsum.photos/200" alt="" className="chatImg" />
           <div className="chatInfo">
-            <h4 className="chatName">Room Name</h4>
+            <h4 className="chatName">contact 1</h4>
             <span className="chatStatus">
               <p>Last seen at...</p>
             </span>
@@ -49,7 +50,7 @@ const Chat: React.FC = () => {
             onMouseLeave={() => setIsFlagFilled(false)}
             onClick={handleFlagClick}
           >
-            {isFlagFilled ? <FlagIcon /> : <FlagOutlinedIcon />}
+            {isFlagFilled ? <IconButton><FlagIcon /></IconButton> : <IconButton><FlagOutlinedIcon /></IconButton>}
           </div>
           <div
             className="chatAction"
@@ -57,18 +58,21 @@ const Chat: React.FC = () => {
             onMouseLeave={() => setIsInfoFilled(false)}
             onClick={handleInfoClick}
           >
-            {isInfoFilled ? <InfoIcon /> : <InfoOutlinedIcon />}
+            {isInfoFilled ? <IconButton><InfoIcon /></IconButton> : <IconButton><InfoOutlinedIcon /></IconButton>}
           </div>
           <div
             className="chatAction"
             onClick={handleMoreVertClick}
           >
-            <MoreVertOutlinedIcon />
+            <IconButton>
+              <MoreVertOutlinedIcon />
+            </IconButton>
           </div>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
+            className="Menu"
           >
             <MenuItem onClick={handleMenuClose}>
               <NotificationsOffRoundedIcon />
