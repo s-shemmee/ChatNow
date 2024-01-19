@@ -1,13 +1,16 @@
 import React from "react";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { IconButton } from "@mui/material";
 
 const Chats:React.FC = () => {
   return (
     <div className="chats">
       {/* searchbar*/}
       <div className="searchbar">
-        <input type="text" placeholder="Search" />
-        <SearchRoundedIcon className="searchIcon"/>
+        <input type="text" placeholder="Search for users..." />
+        <IconButton>
+          <SearchRoundedIcon className="searchIcon"/>
+        </IconButton>
       </div>
 
       {/* chats*/}
