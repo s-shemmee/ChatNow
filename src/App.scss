@@ -349,6 +349,11 @@ body {
       .searchIcon {
         font-size: 1.5rem;
         color: $primary-color;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          color: #7247f3;
+        }
       }
 
       input {
@@ -535,9 +540,9 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 5px;
 
-        .chatAction {
+        .chatAction button{
           font-size: 1.5rem;
           color: $primary-color;
           cursor: pointer;
@@ -547,6 +552,10 @@ body {
             color: #7247f3;
           }
         }
+      }
+
+      .Menu {
+        background-color: red;
       }
     }
 
