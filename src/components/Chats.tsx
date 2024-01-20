@@ -7,7 +7,7 @@ const Chats:React.FC = () => {
     <div className="chats">
       {/* searchbar*/}
       <div className="searchbar">
-        <input type="text" placeholder="Search for users..." />
+        <input type="text" name="searchbar" placeholder="Search for users..." />
         <IconButton>
           <SearchRoundedIcon className="searchIcon"/>
         </IconButton>
