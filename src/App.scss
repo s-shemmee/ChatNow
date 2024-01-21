@@ -581,6 +581,99 @@ body {
       }
     }
 
+    .Messages {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      gap: 20px;
+      overflow-y: auto;
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #7247f3;
+        border-radius: 10px;
+      }
+
+      .messageContent {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: row;
+        width: 100%;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .messageUser {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: row;
+          gap: 10px;
+
+          .messageImg {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid $primary-color;
+            object-fit: cover;
+
+            &.online {
+              border: 2px solid #00ff00;
+            }
+
+            &.offline {
+              border: 2px solid #ff0000;
+            }
+          }
+        }
+
+        .messageInfo {
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          flex-direction: column;
+          gap: 5px;
+
+          .messageText {
+            font-size: 1rem;
+            font-weight: 500;
+            color: $accent-color-2;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: $primary-color;
+            padding: 10px;
+            border-radius: 10px 10px 10px 0px;
+          }
+
+          .messageImgs {
+            border-radius: 10px;
+          }
+          .messageTime {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: $secondary-color;
+            margin-top: 5px;
+          }
+        }
+
+        .messageAction button{
+          font-size: 1rem;
+          color: $primary-color;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            color: #7247f3;
+          }
+        }
+      }
+    }
+
     .chatInput {
       display: flex;
       align-items: flex-start;
