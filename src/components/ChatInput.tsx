@@ -22,6 +22,7 @@ const ChatInput: React.FC = () => {
           placeholder="Type a message"
           inputProps={{ 'aria-label': 'type a message' }}
           className="inputBase"
+          name="input"
         />
       </form>
       <div className="chatIcons">
