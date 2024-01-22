@@ -601,7 +601,6 @@ body {
 
       .messageContent {
         display: flex;
-        align-items: flex-start;
         justify-content: flex-start;
         flex-direction: row;
         width: 100%;
@@ -610,7 +609,7 @@ body {
 
         .messageUser {
           display: flex;
-          align-items: center;
+          align-items: flex-end;
           justify-content: center;
           flex-direction: row;
           gap: 10px;
