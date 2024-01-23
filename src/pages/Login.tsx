@@ -8,42 +8,33 @@ import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
-// Define the Login component
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Register the user
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
-      // Get a reference to the created user
       const user = userCredential.user;
-      localStorage.setItem('token', user.accessToken);
-      localStorage.setItem('user', JSON.stringify(user));
 
-      // Redirect to the home page after successful Login
+      // Handle successful login (redirect or additional logic)
+
+      console.log("User logged in successfully:", user);
+
+      // Redirect to the home page
       navigate("/");
-
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Login failed:", error?.message || "An error occurred");
     }
-
-    // Clear input fields after submission (optional)
-    setEmail("");
-    setPassword("");
   };
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-
   return (
     <div className="loginForm">
       <div className="logo">
