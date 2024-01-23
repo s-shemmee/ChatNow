@@ -12,7 +12,7 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 
 const Register: React.FC = () => {
-  const [username, setUsername] = useState("");
+  const [displayName, setdisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,7 @@ const Register: React.FC = () => {
   
       // Store additional user data in the Realtime Database
       await set(ref(database, `users/${user.uid}`), {
-        username,
+        displayName,
         email,
         avatar,
       });
@@ -47,9 +47,9 @@ const Register: React.FC = () => {
     } catch (error) {
       console.error('Error: chi haja mahiyach', error);
     }
-  
+
     // Clear input fields after submission (optional)
-    setUsername("");
+    setdisplayName("");
     setEmail("");
     setAvatar("");
     setPassword("");
@@ -72,18 +72,18 @@ const Register: React.FC = () => {
       <form onSubmit={handleRegister}>
         {/* Username Input */}
         <div className="formGroup">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Display Name</label>
           <div className="inputGroup">
             <AccountCircleOutlinedIcon className="inputIcon" />
             <input
               type="text"
-              id="username"
-              name="username"
-              autoComplete="username"
-              placeholder="Your username"
-              value={username}
+              id="displayName"
+              name="displayName"
+              autoComplete="displayName"
+              placeholder="Your Display Name"
+              value={displayName}
               required
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setdisplayName(e.target.value)}
             />
           </div>
         </div>
