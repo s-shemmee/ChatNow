@@ -70,9 +70,9 @@ const Register: React.FC = () => {
         <p>Sign up to get started with ChatNow!</p>
       </div>
       <form onSubmit={handleRegister}>
-        {/* Username Input */}
+        {/* displayName Input */}
         <div className="formGroup">
-          <label htmlFor="username">Display Name</label>
+          <label htmlFor="displayName">Display Name</label>
           <div className="inputGroup">
             <AccountCircleOutlinedIcon className="inputIcon" />
             <input
