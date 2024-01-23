@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { app, auth } from "../firebase"; 
+import { auth } from "../firebase"; 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -12,47 +11,30 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 
 const Register: React.FC = () => {
-  const [displayName, setdisplayName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   const navigate = useNavigate();
-
-  const database = getDatabase(app);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
   
     try {
-      // Register the user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
   
-      // Store additional user data in the Realtime Database
-      await set(ref(database, `users/${user.uid}`), {
-        displayName,
-        email,
-        avatar,
-      });
+      // You can add additional user information to the database or update the display name/avatar here
   
-      // Save token and user data in localStorage
-      localStorage.setItem('token', user.accessToken);
-      localStorage.setItem('user', JSON.stringify(user));
+      console.log("User registered successfully:", user);
   
-      // Redirect to the home page after successful registration
+      // Redirect to the home page
       navigate("/");
-  
-    } catch (error) {
-      console.error('Error: chi haja mahiyach', error);
+      console.log("Redirecting to the home page");
+    } catch (error: Error) {
+      console.error("Registration failed:", error?.message || "An error occurred");
     }
-
-    // Clear input fields after submission (optional)
-    setdisplayName("");
-    setEmail("");
-    setAvatar("");
-    setPassword("");
   };
   
   const togglePasswordVisibility = () => {
@@ -83,7 +65,7 @@ const Register: React.FC = () => {
               placeholder="Your Display Name"
               value={displayName}
               required
-              onChange={(e) => setdisplayName(e.target.value)}
+              onChange={(e) => setDisplayName(e.target.value)}
             />
           </div>
         </div>
@@ -133,9 +115,7 @@ const Register: React.FC = () => {
 
         {/* Avatar Input*/}
         <div className="formGroup">
-          <label htmlFor="avatar">
-            Avatar (optional)
-          </label>
+          <label htmlFor="avatar">Avatar (optional)</label>
           <div className="inputGroup">
             <AddPhotoAlternateRoundedIcon className="inputIcon" />
             <input
