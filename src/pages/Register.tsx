@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { auth } from "../firebase"; 
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db, storage } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
@@ -14,9 +16,17 @@ const Register: React.FC = () => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,14 +35,46 @@ const Register: React.FC = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
   
-      // You can add additional user information to the database or update the display name/avatar here
+      // Upload avatars
+      if (file) {
+        const storageRef = ref(storage, `avatars/${displayName}_avatar`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
   
-      console.log("User registered successfully:", user);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            console.error(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+              console.log("File available at", downloadURL);
   
-      // Redirect to the home page
-      navigate("/");
+              // Update the user's profile with the avatar image URL
+              await updateProfile(user, {
+                displayName: user.displayName,
+                photoURL: downloadURL,
+              });
+  
+              // Add the avatar image URL to the user's document in Firestore
+              await setDoc(doc(db, "users", user.uid), {
+                avatar: downloadURL,
+              });
+            });
+          }
+        );
+      }
+      // Redirect to the home page after successful operations
+      navigate("/") 
       console.log("Redirecting to the home page");
-    } catch (error: Error) {
+
+    } catch (error: any) {
       console.error("Registration failed:", error?.message || "An error occurred");
     }
   };
@@ -123,8 +165,7 @@ const Register: React.FC = () => {
               id="avatar"
               name="avatar"
               placeholder="Your avatar"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
+              onChange={handleFileChange} 
             />
           </div>
         </div>
