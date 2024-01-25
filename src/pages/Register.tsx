@@ -5,89 +5,100 @@ import { auth, db, storage } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
-import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
+import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 
 const Register: React.FC = () => {
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const navigate = useNavigate();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
+    const form = e.currentTarget as HTMLFormElement;
+
+    const displayName = (form.elements.namedItem("displayName") as HTMLInputElement)?.value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement)?.value;
+    const avatarInput = form.elements.namedItem("avatar") as HTMLInputElement;
+    const avatar = avatarInput?.files?.[0];
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-  
-      // Upload avatars
-      if (file) {
+      if (displayName && email && password && avatar) {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+        console.log(user);
+
+        // Destination to upload avatars
         const storageRef = ref(storage, `avatars/${displayName}_avatar`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-  
+        // Upload avatar to the storage
+        const uploadTask = uploadBytesResumable(storageRef, avatar);
+
         uploadTask.on(
           "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
-          },
+          () => {},
           (error) => {
-            // Handle unsuccessful uploads
-            console.error(error);
+            console.error(
+              "Avatar upload failed:",
+              (error as Error)?.message || "An error occurred"
+            );
           },
           () => {
-            // Handle successful uploads on complete
-            getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-              console.log("File available at", downloadURL);
-  
-              // Update the user's profile with the avatar image URL
-              await updateProfile(user, {
-                displayName: user.displayName,
-                photoURL: downloadURL,
-              });
-  
-              // Add the avatar image URL to the user's document in Firestore
-              await setDoc(doc(db, "users", user.uid), {
-                avatar: downloadURL,
-              });
-            });
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                // Update user profile
+                await updateProfile(user, {
+                  displayName: displayName,
+                  photoURL: downloadURL,
+                });
+
+                // Add user information to Firestore "users" collection
+                const usersCollectionRef = doc(db, "users", user.uid);
+                await setDoc(usersCollectionRef, {
+                  displayName: displayName,
+                  email: email,
+                  avatarURL: downloadURL,
+                });
+
+                console.log("User profile updated and added to Firestore!");
+                console.log(user);
+              }
+            );
           }
         );
-      }
-      // Redirect to the home page after successful operations
-      navigate("/") 
-      console.log("Redirecting to the home page");
 
-    } catch (error: any) {
-      console.error("Registration failed:", error?.message || "An error occurred");
+        // Redirect to the home page after successful operations
+        navigate("/");
+        console.log("Redirecting to the home page");
+      }
+    } catch (error) {
+      console.error(
+        "Registration failed:",
+        (error as Error)?.message || "An error occurred"
+      );
     }
-  };
-  
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
     <div className="registerForm">
       <div className="logo">
-        <h1>Chat<span>Now</span></h1>
-        <img src={logo} alt="" />
+        <h1>
+          Chat<span>Now</span>
+        </h1>
+        <img src={logo} alt="chatapp logo" />
       </div>
       <div className="heading">
         <h2>Create an account</h2>
@@ -103,11 +114,9 @@ const Register: React.FC = () => {
               type="text"
               id="displayName"
               name="displayName"
-              autoComplete="displayName"
+              autoComplete="off"
               placeholder="Your Display Name"
-              value={displayName}
               required
-              onChange={(e) => setDisplayName(e.target.value)}
             />
           </div>
         </div>
@@ -123,9 +132,7 @@ const Register: React.FC = () => {
               name="email"
               placeholder="name@example.com"
               autoComplete="email"
-              value={email}
               required
-              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
@@ -140,10 +147,8 @@ const Register: React.FC = () => {
               id="password"
               name="password"
               placeholder="********"
-              value={password}
               required
               autoComplete="new-password"
-              onChange={(e) => setPassword(e.target.value)}
             />
             <div className="show_hide" onClick={togglePasswordVisibility}>
               {isPasswordVisible ? (
@@ -157,16 +162,10 @@ const Register: React.FC = () => {
 
         {/* Avatar Input*/}
         <div className="formGroup">
-          <label htmlFor="avatar">Avatar (optional)</label>
+          <label htmlFor="avatar">Avatar</label>
           <div className="inputGroup">
             <AddPhotoAlternateRoundedIcon className="inputIcon" />
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              placeholder="Your avatar"
-              onChange={handleFileChange} 
-            />
+            <input type="file" id="avatar" name="avatar" required/>
           </div>
         </div>
 
