@@ -1,38 +1,25 @@
 import React, { createContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
-// Define a type for the user
-type AuthUser = User | null;
+export const AuthContext = createContext(null);
 
-// Create a context object
-export const AuthContext = createContext<AuthUser>(null);
-
-// Define a type for AuthProvider props
 type AuthProviderProps = {
   children: React.ReactNode;
 };
 
-// Create a provider for components to consume and subscribe to changes
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<AuthUser>(null);
+  const [currentUser, setCurrentUser] = useState({});
 
-  // Get current user data when component mounts
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        setUser(user);
-      } else {
-        // User is signed out
-        setUser(null);
-      }
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      console.log(user);
     });
-    return unsubscribe;
+    return () => unsub();
   }, []);
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>;
 };
 
-// Export the context object
 export default AuthContext;
