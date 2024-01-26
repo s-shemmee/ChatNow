@@ -1,12 +1,38 @@
-import { Outlet } from 'react-router-dom';
-import './App.scss';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useContext, ReactNode } from "react";
+import AuthContext from "./context/AuthContext";
+import Login from "./pages/Login.tsx";
+import Register from "./pages/Register.tsx";
+import Home from "./pages/Home.tsx";
+import "./App.scss";
 
-function App() {
-  return (
-    <div className="App">
-      <Outlet />
-    </div>
-  );
+interface ProtectedRouteProps {
+  children: ReactNode;
 }
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const user = useContext(AuthContext);
+  return user ? <>{children}</> : <Navigate to="/login" />;
+};
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default App;

@@ -1,35 +1,16 @@
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './App.scss'
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-  Route,
-} from "react-router-dom";
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import Protected from './components/Protected.tsx';
-import Home from './pages/Home.tsx';
+import { createRoot } from 'react-dom/client';
+import { AuthProvider } from "./context/AuthContext";
+import App from './App';
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route path="register" element={<Register />} />
-      <Route path="login" element={<Login />} />
-      <Route path="/" element={<Protected />} >
-        <Route path="/" index element={<Home />} />
-      </Route>
-    </Route>
-  )
-);
-
-const rootElement = document.getElementById('root') as Element | null;
+const rootElement = document.getElementById('root');
 
 if (rootElement) {
-  const root = ReactDOM.createRoot(rootElement);
+  const root = createRoot(rootElement);
+
   root.render(
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   );
 } else {
   console.error("Root element not found.");
