@@ -68,9 +68,17 @@ const Register: React.FC = () => {
                 // Add user information to Firestore "users" collection
                 const usersCollectionRef = doc(db, "users", user.uid);
                 await setDoc(usersCollectionRef, {
+                  uid: user.uid,
                   displayName: displayName,
                   email: email,
                   avatarURL: downloadURL,
+                });
+
+                // Add user chats to Firestore "userChats" collection
+                const chatIdList: string[] = []; // Specify the type as an array of strings
+                const userChatsCollectionRef = doc(db, "userChats", user.uid);
+                await setDoc(userChatsCollectionRef, {
+                  chatIdList: chatIdList,
                 });
 
                 console.log("User profile updated and added to Firestore!");
@@ -165,7 +173,7 @@ const Register: React.FC = () => {
           <label htmlFor="avatar">Avatar</label>
           <div className="inputGroup">
             <AddPhotoAlternateRoundedIcon className="inputIcon" />
-            <input type="file" id="avatar" name="avatar" required/>
+            <input type="file" id="avatar" name="avatar" required />
           </div>
         </div>
 
