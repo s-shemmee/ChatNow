@@ -7,11 +7,13 @@ import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import Checkbox from "@mui/material/Checkbox";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -20,6 +22,7 @@ const Login: React.FC = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,7 @@ const Login: React.FC = () => {
       );
       const user = userCredential.user;
 
-      // Handle successful login (redirect or additional logic)
+      // Handle successful login 
       console.log("User logged in successfully:", user);
 
       // Redirect to the home page
@@ -63,8 +66,9 @@ const Login: React.FC = () => {
         <img src={logo} alt="" />
       </div>
       <div className="heading">
-        <h2>Sign in</h2>
-        <p>Welcome back! Please sign in to your account.</p>
+        <h3>
+          Welcome back! Please <span>sign in</span> to your account.
+        </h3>
       </div>
       <form onSubmit={handleLogin}>
         {/* Email Input */}
@@ -112,16 +116,18 @@ const Login: React.FC = () => {
 
         {/* Remember Me & Forget Password */}
         <div className="remember_forget">
-          <div className="formCheckbox">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              className="checkbox"
-              name="rememberMe"
+          <div className="remember">
+            <Checkbox
+              {...label}
+              sx={{ "&.Mui-checked": { color: "#9474f4" } }}
+              checked={formData.rememberMe}
+              onChange={(e) =>
+                setFormData({ ...formData, rememberMe: e.target.checked })
+              }
             />
-            <label htmlFor="rememberMe">Remember me</label>
+            <span>Remember me</span>
           </div>
-          <Link to="/forgot-password" className="forgetPassword">
+          <Link to="/forgot-password" className="forget">
             Forget password?
           </Link>
         </div>
