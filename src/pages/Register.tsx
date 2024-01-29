@@ -11,6 +11,7 @@ import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
+import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 
 const Register: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -27,6 +28,7 @@ const Register: React.FC = () => {
     const form = e.currentTarget as HTMLFormElement;
 
     const displayName = (form.elements.namedItem("displayName") as HTMLInputElement)?.value;
+    const profession = (form.elements.namedItem("profession") as HTMLInputElement)?.value;
     const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
     const password = (form.elements.namedItem("password") as HTMLInputElement)?.value;
     const avatarInput = form.elements.namedItem("avatar") as HTMLInputElement;
@@ -70,6 +72,7 @@ const Register: React.FC = () => {
                 await setDoc(usersCollectionRef, {
                   uid: user.uid,
                   displayName: displayName,
+                  profession: profession,
                   email: email,
                   avatarURL: downloadURL,
                 });
@@ -109,8 +112,9 @@ const Register: React.FC = () => {
         <img src={logo} alt="chatapp logo" />
       </div>
       <div className="heading">
-        <h2>Create an account</h2>
-        <p>Sign up to get started with ChatNow!</p>
+        <h3>
+          <span>Sign up</span> to get started with ChatNow!
+        </h3>
       </div>
       <form onSubmit={handleRegister}>
         {/* displayName Input */}
@@ -124,6 +128,22 @@ const Register: React.FC = () => {
               name="displayName"
               autoComplete="off"
               placeholder="Your Display Name"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Profession Input */}
+        <div className="formGroup">
+          <label htmlFor="profession">Profession</label>
+          <div className="inputGroup">
+            <WorkOutlineRoundedIcon className="inputIcon" />
+            <input
+              type="text"
+              id="profession"
+              name="profession"
+              autoComplete="off"
+              placeholder="Your Profession"
               required
             />
           </div>
