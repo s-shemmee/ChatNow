@@ -12,7 +12,11 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const user = useContext(AuthContext);
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  return user && Object.keys(user).length !== 0 ? (
+    <>{children}</>
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 const App: React.FC = () => {
