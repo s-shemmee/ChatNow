@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import logo from "../assets/logo.png";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
@@ -10,22 +11,9 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { IconButton, Tooltip } from "@mui/material";
 
 const Sidebar: React.FC = () => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const currentUser = React.useContext(AuthContext);
 
-  // Get current user data when component mounts
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in
-        setUser(user);
-      } else {
-        // User is signed out
-        setUser(null);
-      }
-    });
-    return unsubscribe;
-  }, []);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -43,37 +31,44 @@ const Sidebar: React.FC = () => {
   return (
     <div className="sidebar">
       <div className="logo">
-        <img src={logo} alt="" />
+        <img src={logo} alt="chatNow Logo" />
       </div>
       <div className="sidebarMenu">
-        <Tooltip title="Home">
-          <IconButton>
+        <IconButton>
+          <Tooltip title="Home">
             <HomeRoundedIcon className="sidebarIcon" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Messages">
-          <IconButton>
+          </Tooltip>
+        </IconButton>
+
+        <IconButton>
+          <Tooltip title="Messages">
             <SmsRoundedIcon className="sidebarIcon" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Settings">
-          <IconButton>
+          </Tooltip>
+        </IconButton>
+
+        <IconButton>
+          <Tooltip title="Settings">
             <SettingsRoundedIcon className="sidebarIcon" />
-          </IconButton>
-        </Tooltip>
+          </Tooltip>
+        </IconButton>
       </div>
 
       <div className="sidebarUser">
-        {user && user.photoURL && (
-          <Tooltip title={user.displayName}>
-            <img src={user.photoURL} alt="avatarURL" className="userImg" />
+        {currentUser && currentUser.photoURL && (
+          <Tooltip title={currentUser.displayName}>
+            <img
+              src={currentUser.photoURL}
+              alt="avatarURL"
+              className="userImg"
+            />
           </Tooltip>
         )}
-        <Tooltip title="Logout">
-          <IconButton onClick={handleLogout}>
+
+        <IconButton onClick={handleLogout}>
+          <Tooltip title="Logout">
             <LogoutRoundedIcon className="userSignOut" />
-          </IconButton>
-        </Tooltip>
+          </Tooltip>
+        </IconButton>
       </div>
     </div>
   );
