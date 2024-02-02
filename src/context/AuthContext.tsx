@@ -10,15 +10,24 @@ type AuthProviderProps = {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setLoading(false); // Set loading to false once the authentication state is determined
       console.log("User state after reload:", user);
     });
+
     return () => unsub();
   }, []);
-  // Return the user and a function to logout
+
+  // Return loading state and user information
+  if (loading) {
+    // You can return a loading spinner or other loading indicator here
+    return <div>Loading...</div>;
+  }
+
   return (
     <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>
   );
