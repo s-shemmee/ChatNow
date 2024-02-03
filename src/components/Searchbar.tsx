@@ -4,14 +4,21 @@ import {
   query,
   where,
   getDocs,
+  setDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
 import { IconButton, Tooltip } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import WavingHandRoundedIcon from '@mui/icons-material/WavingHandRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 interface UserData {
+  uid: string;
   avatarURL: string;
   displayName: string;
   profession: string;
@@ -21,6 +28,8 @@ const Searchbar: React.FC = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState<UserData | null>(null);
   const [error, setError] = useState(false);
+
+  const currentUser = React.useContext(AuthContext);
 
   const handleSearch = async () => {
     try {
@@ -41,6 +50,50 @@ const Searchbar: React.FC = () => {
     }
   };
 
+  const handleSelect = async () => {
+    if (!currentUser || !user) {
+      // Ensure currentUser and user are defined
+      return;
+    }
+  
+    const combinedId = currentUser.uid > user.uid
+      ? `${currentUser.uid}${user.uid}`
+      : `${user.uid}${currentUser.uid}`;
+  
+    try {
+      const res = await getDoc(doc(db, "chats", combinedId));
+  
+      if (!res.exists()) {
+        // Create a chat in chats collection
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });
+  
+        // Create user chats
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [`${combinedId}.userInfo`]: {
+            uid: user.uid,
+            displayName: user.displayName,
+            photoURL: user.avatarURL,
+          },
+          [`${combinedId}.date`]: serverTimestamp(),
+        });
+  
+        await updateDoc(doc(db, "userChats", user.uid), {
+          [`${combinedId}.userInfo`]: {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          },
+          [`${combinedId}.date`]: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.error("Error handling selection:", err);
+    }
+  
+    setUser(null);
+    setUsername("");
+  };
+  
   return (
     <div className="searchbar">
       <div className="searchForm">
@@ -65,7 +118,7 @@ const Searchbar: React.FC = () => {
               <p className="searchResultUserProfession">{user.profession}</p>
             </div>
             <div className="searchResultbuttons">
-              <Tooltip title="Say Hey!">
+              <Tooltip title="Say Hey!" onClick={handleSelect}>
                 <IconButton>
                   <WavingHandRoundedIcon className="searchResultbutton"/>
                 </IconButton>
