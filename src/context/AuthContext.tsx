@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
-import 'ldrs/dotStream'; // Import the desired loading spinner
+import 'ldrs/dotStream'; 
 
 interface DotStreamProps extends React.HTMLAttributes<HTMLElement> {
   size?: string;
