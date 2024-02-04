@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { AuthProvider } from "./context/AuthContext";
+import { ChatContextProvider } from "./context/ChatContext";
 import App from './App';
 
 const rootElement = document.getElementById('root');
@@ -9,7 +10,9 @@ if (rootElement) {
 
   root.render(
     <AuthProvider>
-      <App />
+      <ChatContextProvider>
+        <App />
+      </ChatContextProvider>
     </AuthProvider>
   );
 } else {
