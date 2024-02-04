@@ -1,28 +1,37 @@
 import React from "react";
 import Searchbar from "../components/Searchbar";
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import { IconButton, Tooltip } from "@mui/material";
 
 const Chats:React.FC = () => {
   return (
-    <div className="chats">
+    <div className="chatsContainer">
       {/* searchbar*/}
       <Searchbar />
 
-      {/* chats
-      <div className="chatsContainer">
-        <div className="chatCard">
-          <div className="chatUser">
-            <img src="https://picsum.photos/200" alt="" className="chatImg"/>
-            <div className="chatInfo">
-              <h3 className="chatName">Chat 1</h3>
-              <p className="chatMsg">This is the last message</p>
+      {/* chats */}
+      <div className="chatsList">
+        <div className="chat">
+          <img src="https://randomuser.me/api/portraits/men/95.jpg" alt="" />
+          <div className="chatInfo">
+            <div className="chatUser">
+              <span className="chatName">Username</span>
+              <span className="chatProfession">developer</span>
             </div>
+            <span className="chatMsg">
+              Lorem ipsum dolor sit
+            </span>
           </div>
-          <span className="chatTime">
-            1:00pm
-          </span>
+            <div className="chatDetails">
+              <span className="chatTime">10:34</span>
+              <Tooltip title="Options">
+                <IconButton>
+                  <MoreHorizRoundedIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
         </div>
       </div>
-      */}
     </div>
   );
 };
