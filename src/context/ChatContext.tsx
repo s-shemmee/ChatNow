@@ -1,5 +1,11 @@
-import React, { createContext, useReducer, ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
+import React, {
+  createContext,
+  useReducer,
+  ReactNode,
+  useContext,
+  Dispatch,
+} from 'react';
+import { AuthContext } from './AuthContext';
 
 interface UserData {
   uid: string;
@@ -18,9 +24,9 @@ interface ChatAction {
   payload?: UserData;
 }
 
-interface ChatContextProps {
-  data: ChatState;
-  dispatch: React.Dispatch<ChatAction>;
+export interface ChatContextProps {
+  state: ChatState;
+  dispatch: Dispatch<ChatAction>;
 }
 
 export const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -32,21 +38,21 @@ interface ChatContextProviderProps {
 export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ children }) => {
   const currentUser = React.useContext(AuthContext);
   const INITIAL_STATE: ChatState = {
-    chatId: "null",
-    user: { uid: "", displayName: "", profession: "", photoURL:"" }, // Initialize user with empty values
+    chatId: 'null',
+    user: { uid: '', displayName: '', profession: '', photoURL: '' },
   };
 
   const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
     switch (action.type) {
-      case "CHANGE_USER":
+      case 'CHANGE_USER':
         return {
-          user: action.payload || { uid: "", displayName: "", profession: "", photoURL: "" }, // Use empty values as fallback
+          user: action.payload || { uid: '', displayName: '', profession: '', photoURL: '' },
           chatId:
             currentUser?.uid && action.payload?.uid
               ? currentUser.uid > action.payload.uid
                 ? currentUser.uid + action.payload.uid
                 : action.payload.uid + currentUser.uid
-              : "null",
+              : 'null',
         };
 
       default:
@@ -56,11 +62,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
 
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
-  const contextValue: ChatContextProps = { data: state, dispatch };
+  const contextValue: ChatContextProps = { state, dispatch };
 
-  return (
-    <ChatContext.Provider value={contextValue}>
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={contextValue as ChatContextProps}>{children}</ChatContext.Provider>;
 };
