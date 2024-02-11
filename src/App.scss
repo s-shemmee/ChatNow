@@ -412,7 +412,7 @@ body {
           align-items: center;
           justify-content: space-between;
           width: 100%;
-          height: 100px;
+          height: 80px;
           background-color: $primary-color;
           color: #fafafa;
           border-radius: 20px;
@@ -443,7 +443,7 @@ body {
             flex-direction: column;
 
             .searchResultUserName {
-              font-size: 1.3rem;
+              font-size: 1rem;
               font-weight: 600;
               color: #fafafa;
             }
@@ -462,7 +462,7 @@ body {
             gap: 5px;
 
             .searchResultbutton {
-              font-size: 1.2rem;
+              font-size: 1.1rem;
               color: #fafafa;
               cursor: pointer;
             }
@@ -477,87 +477,87 @@ body {
       justify-content: center;
       flex-direction: column;
       width: 100%;
-      gap: 5px;
+      gap: 10px;
+      padding: 10px 0;
+      overflow-y: auto;
 
-      .chat {
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .chatCard {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        flex-direction: row;
-        background-color: #fff;
         width: 100%;
+        height: 80px;
+        background-color: #fff;
         border-radius: 20px;
         padding: 10px 20px;
         gap: 10px;
         cursor: pointer;
+        transition: all 0.3s ease-in-out;
 
-        img {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          border: 2px solid $primary-color;
-          object-fit: cover;
-
-          &.online {
-            border: 2px solid #00ff00;
-          }
-
-          &.offline {
-            border: 2px solid #ff0000;
-          }
-        }
-
-        .chatInfo {
+        .chatUserInfo {
           display: flex;
-          flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
           justify-content: center;
-          gap: 10px;
+          flex-direction: row;
+          gap: 20px;
+
+          .chatUserImg {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid $primary-color;
+            object-fit: cover;
+  
+            &.online {
+              border: 2px solid #00ff00;
+            }
+  
+            &.offline {
+              border: 2px solid #ff0000;
+            }
+          }
 
           .chatUser {
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
             flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 10px;
 
-            .chatName {
+            .chatUserName {
               font-size: 1rem;
               font-weight: 600;
               color: $primary-color;
             }
 
-            .chatProfession {
+            .lastMessage {
               font-size: 0.8rem;
               font-weight: 500;
-              color: #a8a8a8;
-            }
-          }
-
-          .chatMsg {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: $secondary-color;
-            word-break: break-word;
+              color: $secondary-color;
+            }            
           }
         }
 
-        .chatDetails {
+        .chatUserDetails {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          justify-content: space-between;
-          gap: 20px;
+          justify-content: center;
+          flex-direction: column;
+          gap: 10px;
 
-          .chatTime {
-            font-size: 0.8rem;
+          .timestamp {
+            font-size: 0.7rem;
             font-weight: 500;
             color: $secondary-color;
           }
 
-          button {
-            font-size: 1rem;
+          .button {
+            font-size: 1.5rem;
             color: $primary-color;
-            padding: 0;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
 
