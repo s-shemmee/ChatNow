@@ -73,7 +73,7 @@ const Searchbar: React.FC = () => {
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.avatarURL,
-            profession: user.profession,
+            profession: user.profession || "", // Ensure user.profession is defined
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });
