@@ -2,7 +2,6 @@ import React, {
   createContext,
   useReducer,
   ReactNode,
-  useContext,
   Dispatch,
 } from 'react';
 import { AuthContext } from './AuthContext';
@@ -29,7 +28,10 @@ export interface ChatContextProps {
   dispatch: Dispatch<ChatAction>;
 }
 
-export const ChatContext = createContext<ChatContextProps | undefined>(undefined);
+export const ChatContext = createContext<ChatContextProps>({
+  state: { chatId: 'null', user: { uid: '', displayName: '', profession: '', photoURL: '' } },
+  dispatch: () => null,
+});
 
 interface ChatContextProviderProps {
   children: ReactNode;
@@ -64,5 +66,5 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
 
   const contextValue: ChatContextProps = { state, dispatch };
 
-  return <ChatContext.Provider value={contextValue as ChatContextProps}>{children}</ChatContext.Provider>;
+  return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
 };
