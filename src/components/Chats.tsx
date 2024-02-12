@@ -12,6 +12,7 @@ interface ChatData {
     uid: string;
     displayName: string;
     photoURL: string;
+    profession: string;
   };
   date: Timestamp;
   lastMessage?: string;
@@ -19,7 +20,7 @@ interface ChatData {
 
 const Chats: React.FC = () => {
   const currentUser = useContext(AuthContext);
-  const { dispatch } = useContext(ChatContext);
+  const {dispatch} = useContext(ChatContext);
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
 
   useEffect(() => {
@@ -41,6 +42,16 @@ const Chats: React.FC = () => {
     };
   }, [currentUser, dispatch]);
 
+  const openChat = (chatId: string) => {
+    // Example: Dispatch CHANGE_USER action
+    const chat = chatData[chatId];
+    if (chat && chat.userInfo) {
+      dispatch({ type: 'CHANGE_USER', payload: chat.userInfo });
+    }
+  };
+
+  console.log(chatData);
+
   const renderChatsList = () => {
     return Object.keys(chatData).map((chatId) => {
       const { userInfo, lastMessage, date } = chatData[chatId];
@@ -53,7 +64,7 @@ const Chats: React.FC = () => {
       const formattedTime = date ? date.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
   
       return (
-        <div key={chatId} className="chatCard">
+        <div key={chatId} className="chatCard"  onClick={() => openChat(chatId)}>
           <div className="chatUserInfo">
             <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
             <div className="chatUser">
