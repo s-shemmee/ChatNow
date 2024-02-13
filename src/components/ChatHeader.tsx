@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { ChatContext } from "../context/ChatContext";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import FlagIcon from "@mui/icons-material/Flag";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -11,7 +12,8 @@ import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton } from "@mui/material";
 
-const Chat: React.FC = () => {
+const ChatHeader: React.FC = () => {
+  const { state } = useContext(ChatContext);
   const [isFlagFilled, setIsFlagFilled] = useState(false);
   const [isInfoFilled, setIsInfoFilled] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -32,17 +34,20 @@ const Chat: React.FC = () => {
     setAnchorEl(null);
   };
 
+  // Use the timestamp from userChats for last seen time
+  const formattedTime = state.user.date
+    ? state.user.date.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : '';
+
   return (
-      <div className="chatHeader">
-        <div className="chatUser">
-          <img src="https://picsum.photos/200" alt="" className="chatImg" />
-          <div className="chatInfo">
-            <h4 className="chatName">contact 1</h4>
-            <span className="chatStatus">
-              <p>Last seen at...</p>
-            </span>
-          </div>
+    <div className="chatHeader">
+      <div className="chatUser">
+        <img src={state.user.photoURL} alt={state.user.photoURL} className="chatImg" />
+        <div className="chatInfo">
+          <h4 className="chatName">{state.user.displayName}</h4>
+          <p className="chatStatus">Last seen at {formattedTime}</p>
         </div>
+      </div>
         <div className="chatActions">
           <div
             className="chatAction"
@@ -100,4 +105,4 @@ const Chat: React.FC = () => {
   );
 };
 
-export default Chat;
+export default ChatHeader;
