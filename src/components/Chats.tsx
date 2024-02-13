@@ -30,7 +30,6 @@ const Chats: React.FC = () => {
         const data = snapshot.data();
         setChatData(data || {});
 
-        // Example: Dispatch CHANGE_USER action
         if (data && data.userInfo) {
           dispatch({ type: 'CHANGE_USER', payload: data.userInfo });
         }
