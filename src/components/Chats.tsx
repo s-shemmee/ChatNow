@@ -46,10 +46,10 @@ const Chats: React.FC = () => {
     // Example: Dispatch CHANGE_USER action
     const chat = chatData[chatId];
     if (chat && chat.userInfo) {
-      dispatch({ type: 'CHANGE_USER', payload: chat.userInfo });
+      dispatch({ type: 'CHANGE_USER', payload: { ...chat.userInfo, date: chat.date } });
     }
   };
-
+  
   console.log(chatData);
 
   const renderChatsList = () => {
