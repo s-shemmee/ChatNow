@@ -5,12 +5,14 @@ import React, {
   Dispatch,
 } from 'react';
 import { AuthContext } from './AuthContext';
+import { Timestamp } from 'firebase/firestore';
 
 interface UserData {
   uid: string;
   displayName: string;
   photoURL: string;
   profession: string;
+  date?: Timestamp; 
 }
 
 interface ChatState {
@@ -20,7 +22,7 @@ interface ChatState {
 
 interface ChatAction {
   type: string;
-  payload?: UserData;
+  payload?: Partial<UserData>; 
 }
 
 export interface ChatContextProps {
@@ -48,7 +50,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
     switch (action.type) {
       case 'CHANGE_USER':
         return {
-          user: action.payload || { uid: '', displayName: '', profession: '', photoURL: '' },
+          user: { ...state.user, ...action.payload },
           chatId:
             currentUser?.uid && action.payload?.uid
               ? currentUser.uid > action.payload.uid
@@ -56,7 +58,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
                 : action.payload.uid + currentUser.uid
               : 'null',
         };
-
+    
       default:
         return state;
     }
