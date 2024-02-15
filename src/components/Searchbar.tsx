@@ -16,12 +16,14 @@ import { IconButton, Tooltip } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import WavingHandRoundedIcon from '@mui/icons-material/WavingHandRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { UserMetadata } from "firebase/auth";
 
 interface UserData {
   uid: string;
   avatarURL: string;
   displayName: string;
   profession: string;
+  metadata?: UserMetadata;
 }
 
 const Searchbar: React.FC = () => {
@@ -73,7 +75,8 @@ const Searchbar: React.FC = () => {
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.avatarURL,
-            profession: user.profession || "", // Ensure user.profession is defined
+            profession: user.profession || "",
+            metadata: user.metadata || {},
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });
