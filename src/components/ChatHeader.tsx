@@ -35,9 +35,9 @@ const ChatHeader: React.FC = () => {
   };
 
   // Use the timestamp from userChats for last seen time
-  const formattedTime = state.user.date
-    ? state.user.date.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    : '';
+  const formattedTime = state.user.metadata?.lastSignInTime
+  ? new Date(state.user.metadata?.lastSignInTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  : '';
 
   return (
     <div className="chatHeader">
