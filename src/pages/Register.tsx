@@ -75,7 +75,15 @@ const Register: React.FC = () => {
                   profession: profession,
                   email: email,
                   avatarURL: downloadURL,
+                  metadata: { 
+                    creationTime: user.metadata.creationTime,
+                    lastSignInTime: user.metadata.lastSignInTime,
+                  },
                 });
+
+                console.log("hello 1", user);
+                console.log("hello 2", user.metadata);
+
 
                 // Add user chats to Firestore "userChats" collection
                 const chatIdList: string[] = []; // Specify the type as an array of strings
