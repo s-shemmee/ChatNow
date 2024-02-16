@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Searchbar from "../components/Searchbar";
-import { doc, onSnapshot, Timestamp } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, Timestamp } from "firebase/firestore";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { db } from "../firebase";
@@ -26,21 +26,34 @@ const Chats: React.FC = () => {
   useEffect(() => {
     const unsubscribe = currentUser && onSnapshot(
       doc(db, "userChats", currentUser.uid),
-      (snapshot) => {
+      async (snapshot) => {
         const data = snapshot.data();
         setChatData(data || {});
-
+  
         if (data && data.userInfo) {
-          dispatch({ type: 'CHANGE_USER', payload: data.userInfo });
+          const userDoc = await getDoc(doc(db, "users", data.userInfo.uid));
+          const userMetadata = userDoc.data()?.metadata || {};
+  
+          dispatch({
+            type: 'CHANGE_USER',
+            payload: {
+              ...data.userInfo,
+              date: data.date,
+              userMetadata: {
+                creationTime: userMetadata.creationTime || null,
+                lastSignInTime: userMetadata.lastSignInTime || null,
+              },
+            },
+          });
         }
       }
     );
-
+  
     return () => {
       unsubscribe && unsubscribe();
     };
   }, [currentUser, dispatch]);
-
+  
   const openChat = (chatId: string) => {
     // Example: Dispatch CHANGE_USER action
     const chat = chatData[chatId];
