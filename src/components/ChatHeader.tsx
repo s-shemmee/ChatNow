@@ -40,15 +40,22 @@ const ChatHeader: React.FC = () => {
   // the full date of chat creation between two users from userChats
   const chatCreationTime = state.user.date?.toDate().toLocaleString();
   
-  // Fetch lastSignInTime directly from the 'users' collection
+  // Fetch the lastSignInTime from Firestore
   const fetchLastSignInTime = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, "users", state.user.uid));
       const lastSignInTime = userDoc.data()?.userMetadata.lastSignInTime;
+      const onlineStatus = userDoc.data()?.online ? "Online" : "Offline";
+  
+      if (onlineStatus === "Online") {
+        return onlineStatus;
+      }
   
       if (lastSignInTime) {
-        const distance = formatDistanceToNow(new Date(lastSignInTime), { addSuffix: true });
-        return `Last seen ${distance}`;
+        const distance = formatDistanceToNow(new Date(lastSignInTime), {
+          addSuffix: true,
+        });
+        return `Last seen ${distance} - ${onlineStatus}`;
       } else {
         return "Unavailable";
       }
@@ -57,7 +64,7 @@ const ChatHeader: React.FC = () => {
       return "Unavailable";
     }
   }, [state.user.uid]);
-
+    
   // Use a state to manage the lastSeenTime and fetch it asynchronously
   const [lastSeenTime, setLastSeenTime] = useState("Loading...");
 
