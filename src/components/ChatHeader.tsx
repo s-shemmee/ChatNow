@@ -1,4 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 import { ChatContext } from "../context/ChatContext";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import FlagIcon from "@mui/icons-material/Flag";
@@ -36,11 +38,32 @@ const ChatHeader: React.FC = () => {
 
   // the full date of chat creation between two users from userChats
   const chatCreationTime = state.user.date?.toDate().toLocaleString();
+  
+  // Fetch lastSignInTime directly from the 'users' collection
+  const fetchLastSignInTime = useCallback(async () => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", state.user.uid));
+      const lastSignInTime = userDoc.data()?.userMetadata.lastSignInTime;
+      return lastSignInTime
+        ? new Date(lastSignInTime).toLocaleString([], { hour: '2-digit', minute: '2-digit' })
+        : "Unavailable";
+    } catch (error) {
+      console.error("Error fetching lastSignInTime:", error);
+      return "Unavailable";
+    }
+  }, [state.user.uid]);
 
-  // the last seen time of the user who is currently chatting with you
-  const lastSeenTime = state.user.userMetadata.lastSignInTime
-    ? new Date(state.user.userMetadata.lastSignInTime).toLocaleString([], {hour: '2-digit', minute:'2-digit'} )
-    : "Unavailable";
+  // Use a state to manage the lastSeenTime and fetch it asynchronously
+  const [lastSeenTime, setLastSeenTime] = useState("Loading...");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const time = await fetchLastSignInTime();
+      setLastSeenTime(time);
+    };
+
+    fetchData();
+  }, [fetchLastSignInTime]);
 
   return (
     <div className="chatHeader">
