@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db } from "../firebase";
-import { doc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import Checkbox from "@mui/material/Checkbox";
-import { updateDoc } from "firebase/firestore";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +19,7 @@ const Login: React.FC = () => {
   });
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -38,6 +39,8 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       const { email, password } = formData;
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -73,8 +76,14 @@ const Login: React.FC = () => {
         "Login failed:",
         (error as Error)?.message || "An error occurred"
       );
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="loginForm">

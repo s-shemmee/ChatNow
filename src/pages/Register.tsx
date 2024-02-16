@@ -12,9 +12,11 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Register: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -35,6 +37,7 @@ const Register: React.FC = () => {
     const avatar = avatarInput?.files?.[0];
 
     try {
+      setLoading(true);
       if (displayName && email && password && avatar) {
         const userCredential: UserCredential = await createUserWithEmailAndPassword(
           auth,
@@ -104,8 +107,14 @@ const Register: React.FC = () => {
         "Registration failed:",
         (error as Error)?.message || "An error occurred"
       );
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="registerForm">
