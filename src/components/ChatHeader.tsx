@@ -38,8 +38,9 @@ const ChatHeader: React.FC = () => {
   const chatCreationTime = state.user.date?.toDate().toLocaleString();
 
   // the last seen time of the user who is currently chatting with you
-  const lastSeenTime = state.user.date?.toDate().toLocaleTimeString();
-  
+  const lastSeenTime = state.user.userMetadata.lastSignInTime
+    ? new Date(state.user.userMetadata.lastSignInTime).toLocaleString([], {hour: '2-digit', minute:'2-digit'} )
+    : "Unavailable";
 
   return (
     <div className="chatHeader">
