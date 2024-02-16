@@ -34,7 +34,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     try {
       const { email, password } = formData;
       const userCredential = await signInWithEmailAndPassword(
@@ -43,14 +43,10 @@ const Login: React.FC = () => {
         password
       );
       const user = userCredential.user;
-  
+
       // Handle successful login 
       console.log("User logged in successfully:", user);
-  
-      // Access metadata
-      const metadata = user.metadata;
-      console.log("User metadata:", metadata);
-  
+
       // Redirect to the home page
       navigate("/");
     } catch (error) {
@@ -60,7 +56,7 @@ const Login: React.FC = () => {
       );
     }
   };
-  
+
   return (
     <div className="loginForm">
       <div className="logo">
@@ -128,9 +124,8 @@ const Login: React.FC = () => {
               onChange={(e) =>
                 setFormData({ ...formData, rememberMe: e.target.checked })
               }
-              aria-label="Remember me checkbox"
             />
-            <span aria-hidden="true">Remember me</span>
+            <span>Remember me</span>
           </div>
           <Link to="/forgot-password" className="forget">
             Forget password?

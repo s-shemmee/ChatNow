@@ -24,16 +24,16 @@ const Register: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const form = e.currentTarget as HTMLFormElement;
-  
+
     const displayName = (form.elements.namedItem("displayName") as HTMLInputElement)?.value;
     const profession = (form.elements.namedItem("profession") as HTMLInputElement)?.value;
     const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
     const password = (form.elements.namedItem("password") as HTMLInputElement)?.value;
     const avatarInput = form.elements.namedItem("avatar") as HTMLInputElement;
     const avatar = avatarInput?.files?.[0];
-  
+
     try {
       if (displayName && email && password && avatar) {
         const userCredential = await createUserWithEmailAndPassword(
@@ -42,12 +42,13 @@ const Register: React.FC = () => {
           password
         );
         const user = userCredential.user;
-  
+        console.log(user);
+
         // Destination to upload avatars
         const storageRef = ref(storage, `avatars/${displayName}_avatar`);
         // Upload avatar to the storage
         const uploadTask = uploadBytesResumable(storageRef, avatar);
-  
+
         uploadTask.on(
           "state_changed",
           () => {},
@@ -57,58 +58,42 @@ const Register: React.FC = () => {
               (error as Error)?.message || "An error occurred"
             );
           },
-          async () => {
-            try {
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-  
-              // Update user profile
-              await updateProfile(user, {
-                displayName: displayName,
-                photoURL: downloadURL,
-              });
-  
-              // Fetch the user again to get the latest information
-              const updatedUser = await auth.currentUser;
-  
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                // Update user profile
+                await updateProfile(user, {
+                  displayName: displayName,
+                  photoURL: downloadURL,
+                });
 
-            if (updatedUser) {
-              // Add user information to Firestore "users" collection 
-              const usersCollectionRef = doc(db, "users", updatedUser.uid);
-              await setDoc(usersCollectionRef, {
-                uid: updatedUser.uid,
-                displayName: displayName,
-                profession: profession,
-                email: email,
-                avatarURL: downloadURL,
-                metadata: { 
-                  creationTime: updatedUser.metadata.creationTime,
-                  lastSignInTime: updatedUser.metadata.lastSignInTime,
-                },
-              });
-              
-              // Add user chats to Firestore "userChats" collection
-              const chatIdList: string[] = [];
-              const userChatsCollectionRef = doc(db, "userChats", updatedUser.uid);
-              await setDoc(userChatsCollectionRef, {
-                chatIdList: chatIdList,
-              });
-              
-              console.log("User profile updated and added to Firestore!", updatedUser);
-  
-              // Redirect to the home page after successful operations
-              navigate("/");
-              console.log("Redirecting to the home page");              
-            } else {
-              console.error("Failed to fetch updated user profile. User is null.");
-            }
-            } catch (error) {
-              console.error(
-                "Failed to update user profile in Firestore:",
-                (error as Error)?.message || "An error occurred"
-              );
-            }
+                // Add user information to Firestore "users" collection
+                const usersCollectionRef = doc(db, "users", user.uid);
+                await setDoc(usersCollectionRef, {
+                  uid: user.uid,
+                  displayName: displayName,
+                  profession: profession,
+                  email: email,
+                  avatarURL: downloadURL,
+                });
+
+                // Add user chats to Firestore "userChats" collection
+                const chatIdList: string[] = []; // Specify the type as an array of strings
+                const userChatsCollectionRef = doc(db, "userChats", user.uid);
+                await setDoc(userChatsCollectionRef, {
+                  chatIdList: chatIdList,
+                });
+
+                console.log("User profile updated and added to Firestore!");
+                console.log(user);
+              }
+            );
           }
         );
+
+        // Redirect to the home page after successful operations
+        navigate("/");
+        console.log("Redirecting to the home page");
       }
     } catch (error) {
       console.error(
@@ -117,7 +102,6 @@ const Register: React.FC = () => {
       );
     }
   };
-  
 
   return (
     <div className="registerForm">
