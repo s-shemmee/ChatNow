@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db, storage } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, User, UserCredential, UserMetadata } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -36,13 +36,14 @@ const Register: React.FC = () => {
 
     try {
       if (displayName && email && password && avatar) {
-        const userCredential = await createUserWithEmailAndPassword(
+        const userCredential: UserCredential = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
-        const user = userCredential.user;
-        console.log(user);
+
+        const user: User = userCredential.user;
+        const userMetadata: UserMetadata = user.metadata;
 
         // Destination to upload avatars
         const storageRef = ref(storage, `avatars/${displayName}_avatar`);
@@ -75,6 +76,10 @@ const Register: React.FC = () => {
                   profession: profession,
                   email: email,
                   avatarURL: downloadURL,
+                  userMetadata: {
+                    creationTime: userMetadata.creationTime,
+                    lastSignInTime: userMetadata.lastSignInTime,
+                  },
                 });
 
                 // Add user chats to Firestore "userChats" collection
@@ -84,8 +89,7 @@ const Register: React.FC = () => {
                   chatIdList: chatIdList,
                 });
 
-                console.log("User profile updated and added to Firestore!");
-                console.log(user);
+                console.log("User profile updated and added to Firestore!", user);
               }
             );
           }
