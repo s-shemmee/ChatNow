@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../assets/logo.png";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
@@ -12,13 +12,14 @@ import { IconButton, Tooltip } from "@mui/material";
 import LoadingScreen from "./LoadingScreen";
 
 const Sidebar: React.FC = () => {
-  const currentUser = React.useContext(AuthContext);
+  const currentUser = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     try {
-      setLoggingOut(true); // Show loading screen during logout
+      setLoading(true);
       await signOut(auth);
       // Redirect to the login page after successful logout
       navigate("/login");
@@ -28,11 +29,11 @@ const Sidebar: React.FC = () => {
         (error as Error).message || "An error occurred"
       );
     } finally {
-      setLoggingOut(false); 
+      setLoading(false);
     }
   };
 
-  if (loggingOut) {
+  if (loading) {
     return <LoadingScreen />;
   }
 
