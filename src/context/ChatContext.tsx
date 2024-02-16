@@ -6,6 +6,8 @@ import React, {
 } from 'react';
 import { AuthContext } from './AuthContext';
 import { Timestamp } from 'firebase/firestore';
+import { db } from '../firebase';
+import { getDoc, doc } from 'firebase/firestore';
 
 interface UserData {
   uid: string;
@@ -58,13 +60,32 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
                 : action.payload.uid + currentUser.uid
               : 'null',
         };
-    
+
       default:
         return state;
     }
   };
 
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
+
+  // Fetch user metadata from Firestore "users" collection when the component mounts
+  React.useEffect(() => {
+    const fetchUserMetadata = async () => {
+      // Check if currentUser is available and has uid
+      if (currentUser?.uid) {
+        const userDocSnapshot = await getDoc(doc(db, 'users', currentUser.uid));
+
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data() as Partial<UserData>;
+
+          // Update the user metadata in the context
+          dispatch({ type: 'CHANGE_USER', payload: userData });
+        }
+      }
+    };
+
+    fetchUserMetadata();
+  }, [currentUser]);
 
   const contextValue: ChatContextProps = { state, dispatch };
 
