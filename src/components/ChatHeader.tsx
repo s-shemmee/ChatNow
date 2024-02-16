@@ -1,105 +1,78 @@
 import React, { useState, useContext } from "react";
 import { ChatContext } from "../context/ChatContext";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import FlagIcon from "@mui/icons-material/Flag";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import InfoIcon from "@mui/icons-material/Info";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import {
+  FlagOutlined as FlagOutlinedIcon,
+  Flag as FlagIcon,
+  InfoOutlined as InfoOutlinedIcon,
+  Info as InfoIcon,
+  MoreVertOutlined as MoreVertOutlinedIcon,
+  NotificationsOffRounded as NotificationsOffRoundedIcon,
+  ArchiveRounded as ArchiveRoundedIcon,
+  DeleteRounded as DeleteRoundedIcon,
+} from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded';
-import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import { IconButton } from "@mui/material";
 
 const ChatHeader: React.FC = () => {
   const { state } = useContext(ChatContext);
+  const { user } = state;
   const [isFlagFilled, setIsFlagFilled] = useState(false);
   const [isInfoFilled, setIsInfoFilled] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const handleFlagClick = () => {
-    setIsFlagFilled(!isFlagFilled);
-  };
+  const handleFlagClick = () => setIsFlagFilled((prev) => !prev);
+  const handleInfoClick = () => setIsInfoFilled((prev) => !prev);
+  const handleMoreVertClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
-  const handleInfoClick = () => {
-    setIsInfoFilled(!isInfoFilled);
-  };
+  const chatCreationTime = user.date?.toDate().toLocaleString();
+  const lastSeenTime = user.date?.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-  const handleMoreVertClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  // Use the timestamp from userChats for last seen time
-  const formattedTime = state.user.date
-    ? state.user.date.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    : '';
+  const renderFlagIcon = () => (isFlagFilled ? <FlagIcon /> : <FlagOutlinedIcon />);
+  const renderInfoIcon = () => (isInfoFilled ? <InfoIcon /> : <InfoOutlinedIcon />);
 
   return (
     <div className="chatHeader">
       <div className="chatUser">
-        <img src={state.user.photoURL} alt={state.user.photoURL} className="chatImg" />
+        <img src={user.photoURL} alt={user.photoURL} className="chatImg" />
         <div className="chatInfo">
-          <h4 className="chatName">{state.user.displayName}</h4>
-          <p className="chatStatus">Last seen at {formattedTime}</p>
+          <h4 className="chatName">{user.displayName}</h4>
+          <p className="chatStatus">Last seen at {lastSeenTime}</p>
         </div>
       </div>
-        <div className="chatActions">
-          <div
-            className="chatAction"
-            onMouseEnter={() => setIsFlagFilled(true)}
-            onMouseLeave={() => setIsFlagFilled(false)}
-            onClick={handleFlagClick}
-          >
-            {isFlagFilled ? <IconButton><FlagIcon /></IconButton> : <IconButton><FlagOutlinedIcon /></IconButton>}
-          </div>
-          <div
-            className="chatAction"
-            onMouseEnter={() => setIsInfoFilled(true)}
-            onMouseLeave={() => setIsInfoFilled(false)}
-            onClick={handleInfoClick}
-          >
-            {isInfoFilled ? <IconButton><InfoIcon /></IconButton> : <IconButton><InfoOutlinedIcon /></IconButton>}
-          </div>
-          <div
-            className="chatAction"
-            onClick={handleMoreVertClick}
-          >
-            <IconButton>
+      <div className="chatActions">
+        <div className="chatAction" onMouseEnter={() => setIsFlagFilled(true)} onMouseLeave={() => setIsFlagFilled(false)} onClick={handleFlagClick}>
+          <IconButton>
+            <Tooltip title="Report">{renderFlagIcon()}</Tooltip>
+          </IconButton>
+        </div>
+        <div className="chatAction" onMouseEnter={() => setIsInfoFilled(true)} onMouseLeave={() => setIsInfoFilled(false)} onClick={handleInfoClick}>
+          <IconButton>
+            <Tooltip title={`Chat Created at ${chatCreationTime}`} arrow>{renderInfoIcon()}</Tooltip>
+          </IconButton>
+        </div>
+        <div className="chatAction" onClick={handleMoreVertClick}>
+          <IconButton>
+            <Tooltip title="More">
               <MoreVertOutlinedIcon />
-            </IconButton>
-          </div>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            className="Menu"
-          >
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <NotificationsOffRoundedIcon className="chatAction" />
-              </IconButton>
-              Mute Chat
-            </MenuItem>
-
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <ArchiveRoundedIcon className="chatAction" />
-              </IconButton>
-              Archive Chat
-            </MenuItem>
-
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <DeleteRoundedIcon className="chatAction" />
-              </IconButton>
-              Delete Chat
-            </MenuItem>
-          </Menu>
+            </Tooltip>
+          </IconButton>
+        </div>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} className="Menu">
+          <MenuItem>
+            <NotificationsOffRoundedIcon className="chatAction"/>
+            <span>Notifications</span>
+          </MenuItem>
+          <MenuItem>
+            <ArchiveRoundedIcon className="chatAction"/>
+            <span>Archive</span>
+          </MenuItem>
+          <MenuItem>
+            <DeleteRoundedIcon className="chatAction"/>
+            <span>Delete</span>
+           </MenuItem>
+        </Menu>
         </div>
       </div>
   );
