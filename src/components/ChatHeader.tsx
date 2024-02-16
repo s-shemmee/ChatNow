@@ -13,6 +13,7 @@ import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRou
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, Tooltip } from "@mui/material";
+import { formatDistanceToNow } from "date-fns";
 
 const ChatHeader: React.FC = () => {
   const { state } = useContext(ChatContext);
@@ -44,9 +45,13 @@ const ChatHeader: React.FC = () => {
     try {
       const userDoc = await getDoc(doc(db, "users", state.user.uid));
       const lastSignInTime = userDoc.data()?.userMetadata.lastSignInTime;
-      return lastSignInTime
-        ? new Date(lastSignInTime).toLocaleString([], { hour: '2-digit', minute: '2-digit' })
-        : "Unavailable";
+  
+      if (lastSignInTime) {
+        const distance = formatDistanceToNow(new Date(lastSignInTime), { addSuffix: true });
+        return `Last seen ${distance}`;
+      } else {
+        return "Unavailable";
+      }
     } catch (error) {
       console.error("Error fetching lastSignInTime:", error);
       return "Unavailable";
@@ -71,7 +76,7 @@ const ChatHeader: React.FC = () => {
         <img src={state.user.photoURL} alt={state.user.photoURL} className="chatImg" />
         <div className="chatInfo">
           <h4 className="chatName">{state.user.displayName}</h4>
-          <p className="chatStatus">Last seen at {lastSeenTime}</p>
+          <p className="chatStatus">{lastSeenTime}</p>
         </div>
       </div>
         <div className="chatActions">
