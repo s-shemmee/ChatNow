@@ -73,7 +73,7 @@ const ChatHeader: React.FC = () => {
             onClick={handleMoreVertClick}
           >
             <IconButton>
-              <Tooltip title="More" arrow>
+              <Tooltip title="More">
                 <MoreVertOutlinedIcon />
               </Tooltip>
             </IconButton>
