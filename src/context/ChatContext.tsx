@@ -6,15 +6,13 @@ import React, {
 } from 'react';
 import { AuthContext } from './AuthContext';
 import { Timestamp } from 'firebase/firestore';
-import { UserMetadata } from 'firebase/auth';
 
 interface UserData {
   uid: string;
   displayName: string;
   photoURL: string;
   profession: string;
-  metadata?: UserMetadata;
-  date?: Timestamp;
+  date?: Timestamp; 
 }
 
 interface ChatState {
@@ -52,14 +50,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
     switch (action.type) {
       case 'CHANGE_USER':
         return {
-          user: {
-            ...state.user,
-            ...action.payload,
-            metadata: {
-              ...state.user.metadata,
-              ...action.payload?.metadata,
-            },
-          },
+          user: { ...state.user, ...action.payload },
           chatId:
             currentUser?.uid && action.payload?.uid
               ? currentUser.uid > action.payload.uid
@@ -67,12 +58,12 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
                 : action.payload.uid + currentUser.uid
               : 'null',
         };
-  
+    
       default:
         return state;
     }
   };
-  
+
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
   const contextValue: ChatContextProps = { state, dispatch };

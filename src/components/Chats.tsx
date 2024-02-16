@@ -6,7 +6,6 @@ import { ChatContext } from "../context/ChatContext";
 import { db } from "../firebase";
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { Tooltip } from "@mui/material";
-import { UserMetadata } from "firebase/auth";
 
 interface ChatData {
   userInfo: {
@@ -14,7 +13,6 @@ interface ChatData {
     displayName: string;
     photoURL: string;
     profession: string;
-    metadata?: UserMetadata;
   };
   date: Timestamp;
   lastMessage?: string;
@@ -51,6 +49,8 @@ const Chats: React.FC = () => {
     }
   };
   
+  console.log(chatData);
+
   const renderChatsList = () => {
     return Object.keys(chatData).map((chatId) => {
       const { userInfo, lastMessage, date } = chatData[chatId];
