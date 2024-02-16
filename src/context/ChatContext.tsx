@@ -14,7 +14,11 @@ interface UserData {
   displayName: string;
   photoURL: string;
   profession: string;
-  date?: Timestamp; 
+  date?: Timestamp;
+  userMetadata: {
+    creationTime: string;
+    lastSignInTime: string;
+  };
 }
 
 interface ChatState {
@@ -33,7 +37,7 @@ export interface ChatContextProps {
 }
 
 export const ChatContext = createContext<ChatContextProps>({
-  state: { chatId: 'null', user: { uid: '', displayName: '', profession: '', photoURL: '' } },
+  state: { chatId: 'null', user: { uid: '', displayName: '', profession: '', photoURL: '', userMetadata : { creationTime : '', lastSignInTime: '' } } },
   dispatch: () => null,
 });
 
@@ -45,7 +49,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
   const currentUser = React.useContext(AuthContext);
   const INITIAL_STATE: ChatState = {
     chatId: 'null',
-    user: { uid: '', displayName: '', profession: '', photoURL: '' },
+    user: { uid: '', displayName: '', profession: '', photoURL: '', userMetadata : { creationTime:  "", lastSignInTime: "" } },
   };
 
   const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
