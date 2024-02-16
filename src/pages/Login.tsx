@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import Checkbox from "@mui/material/Checkbox";
+import { updateDoc } from "firebase/firestore";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -46,6 +48,23 @@ const Login: React.FC = () => {
 
       // Handle successful login 
       console.log("User logged in successfully:", user);
+
+      // fetch the lastest user metadata from Firebase Auth
+      const updatedUser = auth.currentUser;
+      const userMetadata = updatedUser?.metadata;
+
+      // Update user metadata in Firebase "users" collection
+      if (updatedUser && userMetadata) {
+        const usersCollectionRef = doc(db, "users", updatedUser.uid);
+        await updateDoc(usersCollectionRef, {
+          userMetadata: {
+            creationTime: userMetadata.creationTime,
+            lastSignInTime: userMetadata.lastSignInTime,
+          },
+        });
+      }
+
+      console.log("User metadata updated in Firestore!", userMetadata);
 
       // Redirect to the home page
       navigate("/");
