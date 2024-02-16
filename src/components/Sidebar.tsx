@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
+import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { IconButton, Tooltip } from "@mui/material";
+import LoadingScreen from "./LoadingScreen";
 
 const Sidebar: React.FC = () => {
   const currentUser = React.useContext(AuthContext);
-
   const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     try {
+      setLoggingOut(true); // Show loading screen during logout
       await signOut(auth);
       // Redirect to the login page after successful logout
       navigate("/login");
@@ -25,8 +27,14 @@ const Sidebar: React.FC = () => {
         "Logout failed:",
         (error as Error).message || "An error occurred"
       );
+    } finally {
+      setLoggingOut(false); 
     }
   };
+
+  if (loggingOut) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="sidebar">
@@ -41,8 +49,8 @@ const Sidebar: React.FC = () => {
         </IconButton>
 
         <IconButton>
-          <Tooltip title="Messages">
-            <SmsRoundedIcon className="sidebarIcon" />
+          <Tooltip title="Archive">
+            <ArchiveRoundedIcon className="sidebarIcon" />
           </Tooltip>
         </IconButton>
 
