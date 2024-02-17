@@ -12,9 +12,13 @@ const Home: React.FC = () => {
     setSelectedChatId(chatId);
   };
 
+  const clearSelectedChat = () => {
+    setSelectedChatId(null);
+  };
+
   return (
     <div className="home">
-      <Sidebar />
+      <Sidebar onHomeClick={clearSelectedChat} />
       <Chats onSelectChat={selectChat} selectedChatId={selectedChatId} />
       {selectedChatId ? (
         <Chat chatId={selectedChatId} />
