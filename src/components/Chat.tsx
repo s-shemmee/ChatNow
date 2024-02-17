@@ -3,11 +3,16 @@ import ChatHeader from "../components/ChatHeader";
 import ChatInput from "../components/ChatInput";
 import Messages from "../components/Messages";
 
-const Chat:React.FC = () => {
+interface ChatProps {
+  chatId: string | null;
+}
+
+const Chat: React.FC<ChatProps> = ({ chatId }) => {
+
   return (
     <div className="chat">
       <ChatHeader />
-      <Messages />
+      <Messages /> 
       <ChatInput />
     </div>
   );
