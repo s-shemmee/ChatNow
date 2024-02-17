@@ -764,7 +764,7 @@ body {
       gap: 10px;
       background-color: #fff;
       border-radius: 20px;
-      padding: 20px 10px;
+      padding: 20px;
 
       form {
         width: 100%;
@@ -798,7 +798,10 @@ body {
         width: 100%;
 
         .chatOptions {
-          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
 
           .chatIcon {
             font-size: 1.5rem;
@@ -812,13 +815,16 @@ body {
         }
 
         .chatSend {
-          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: row;
+          gap: 10px;
 
           .chatIcon {
             font-size: 1.5rem;
             color: $primary-color;
             transition: all 0.3s ease-in-out;
-            margin-right: 5px;
 
             &:hover {
               color: #7247f3;
