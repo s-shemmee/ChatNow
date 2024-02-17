@@ -250,20 +250,21 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: 100%;
+    text-align: center;
+    width: 70%;
     height: 100%;
     padding: 20px 10px;
 
-    h3 {
+    h4 {
       font-size: 2rem;
-      font-weight: 600;
+      font-weight: 500;
       color: $primary-color;
       margin-bottom: 10px;
     }
 
     p {
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 400;
       color: $secondary-color;
     }
   }
@@ -379,7 +380,7 @@ body {
 
           &::placeholder {
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 400;
             color: $secondary-color;
             font-style: italic;
           }
