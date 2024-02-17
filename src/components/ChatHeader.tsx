@@ -80,7 +80,12 @@ const ChatHeader: React.FC = () => {
   return (
     <div className="chatHeader">
       <div className="chatUser">
-        <img src={state.user.photoURL} alt={state.user.photoURL} className="chatImg" />
+        <img
+          src={state.user.photoURL}
+          alt={state.user.photoURL}
+          className="chatImg"
+          data-online={lastSeenTime === "Online"}
+        />
         <div className="chatInfo">
           <h4 className="chatName">{state.user.displayName}</h4>
           <p className="chatStatus">{lastSeenTime}</p>
