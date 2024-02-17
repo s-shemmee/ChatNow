@@ -11,7 +11,11 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { IconButton, Tooltip } from "@mui/material";
 import LoadingScreen from "./LoadingScreen";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  onHomeClick: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
   const currentUser = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +37,10 @@ const Sidebar: React.FC = () => {
     }
   };
 
+  const handleClickHome = () => {
+    onHomeClick(); // Call the onHomeClick callback to clear the selected chat
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -43,7 +51,7 @@ const Sidebar: React.FC = () => {
         <img src={logo} alt="chatNow Logo" />
       </div>
       <div className="sidebarMenu">
-        <IconButton>
+        <IconButton onClick={handleClickHome}>
           <Tooltip title="Home">
             <HomeRoundedIcon className="sidebarIcon" />
           </Tooltip>
