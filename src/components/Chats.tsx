@@ -18,9 +18,14 @@ interface ChatData {
   lastMessage?: string;
 }
 
-const Chats: React.FC = () => {
+interface ChatsProps {
+  onSelectChat: (chatId: string) => void;
+  selectedChatId: string | null;
+}
+
+const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const currentUser = useContext(AuthContext);
-  const {dispatch} = useContext(ChatContext);
+  const { dispatch } = useContext(ChatContext);
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
 
   useEffect(() => {
@@ -29,11 +34,11 @@ const Chats: React.FC = () => {
       async (snapshot) => {
         const data = snapshot.data();
         setChatData(data || {});
-  
+
         if (data && data.userInfo) {
           const userDoc = await getDoc(doc(db, "users", data.userInfo.uid));
           const userMetadata = userDoc.data()?.metadata || {};
-  
+
           dispatch({
             type: 'CHANGE_USER',
             payload: {
@@ -48,35 +53,32 @@ const Chats: React.FC = () => {
         }
       }
     );
-  
+
     return () => {
       unsubscribe && unsubscribe();
     };
   }, [currentUser, dispatch]);
-  
+
   const openChat = (chatId: string) => {
-    // Example: Dispatch CHANGE_USER action
     const chat = chatData[chatId];
     if (chat && chat.userInfo) {
+      onSelectChat(chatId);
       dispatch({ type: 'CHANGE_USER', payload: { ...chat.userInfo, date: chat.date } });
     }
   };
-  
-  console.log(chatData);
 
   const renderChatsList = () => {
     return Object.keys(chatData).map((chatId) => {
       const { userInfo, lastMessage, date } = chatData[chatId];
-  
+
       if (!userInfo) {
         return null;
       }
-  
-      // Check if the date exists before calling toDate()
+
       const formattedTime = date ? date.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
-  
+
       return (
-        <div key={chatId} className="chatCard"  onClick={() => openChat(chatId)}>
+        <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
           <div className="chatUserInfo">
             <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
             <div className="chatUser">
@@ -88,20 +90,16 @@ const Chats: React.FC = () => {
             <Tooltip title="More Options" className="button">
               <MoreHorizRoundedIcon />
             </Tooltip>
-            {/* Check if formattedTime is not an empty string before rendering */}
             {formattedTime && <p className="timestamp">{formattedTime}</p>}
           </div>
         </div>
       );
     });
   };
-  
+
   return (
     <div className="chatsContainer">
-      {/* searchbar*/}
       <Searchbar />
-
-      {/* chats */}
       <div className="chatsList">
         {renderChatsList()}
       </div>
