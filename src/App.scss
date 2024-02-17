@@ -614,12 +614,12 @@ body {
           border: 2px solid $primary-color;
           object-fit: cover;
 
-          &.online {
-            border: 2px solid #00ff00;
+          &[data-online="true"] {
+            border: 2px solid #00ff00; 
           }
 
-          &.offline {
-            border: 2px solid #ff0000;
+          &[data-online="false"] {
+            border: 2px solid #ff0000; 
           }
         }
 
