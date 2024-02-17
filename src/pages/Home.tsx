@@ -1,29 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import Chat from "../components/Chat";
+import { AuthContext } from "../context/AuthContext";
 
 const Home: React.FC = () => {
-  // State to track whether a chat is selected or not
-  {/*const [selectedChat, setSelectedChat] = useState<number | null>(null);*/}
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const currentUser = useContext(AuthContext);
+
+  const selectChat = (chatId: string) => {
+    setSelectedChatId(chatId);
+  };
 
   return (
     <div className="home">
       <Sidebar />
-      <Chats />
-      <Chat />
-      {/* <Chats onSelectChat={(chatId: number) => setSelectedChat(chatId)} />
-      
-      {/* Display message when no chat is selected */}
-      {/*{selectedChat === null ? (
+      <Chats onSelectChat={selectChat} selectedChatId={selectedChatId} />
+      {selectedChatId ? (
+        <Chat chatId={selectedChatId} />
+      ) : (
         <div className="noChatMessage">
-          <h3>Hey there!</h3> 
+          <h4>Hey there, {currentUser?.displayName}!</h4> 
           <p>No chats yet. Click on a user chat to kick off a conversation. 😊</p>    
         </div>
-      ) : (
-        // Render the Chat component when a chat is selected
-        <Chat />
-      )}*/}
+      )}
     </div>
   );
 };
