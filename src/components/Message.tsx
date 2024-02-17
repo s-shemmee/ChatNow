@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import ShortcutRoundedIcon from '@mui/icons-material/ShortcutRounded';
@@ -8,8 +9,18 @@ import { IconButton } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-const Message: React.FC = () => {
+interface MessageData {
+  senderId: string;
+  senderName: string;
+  senderAvatar: string;
+  text: string;
+  timestamp?: Date;
+}
+
+const Message: React.FC<{ message: MessageData }> = ({ message }) => {
+  const currentUser = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleMoreHorizClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -19,58 +30,52 @@ const Message: React.FC = () => {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
+
   return (
-    <div className='messageContent'>
-      <div className='messageUser'>
-        <img src='https://picsum.photos/200' alt='' className='messageImg' />
+    <div ref={ref} className={`message ${message.senderId === currentUser?.uid ? "Sender" : ""}`}>
+      <div className="messageInfo">
+        <img src={message.senderAvatar} alt={message.senderId} />
+        <p>{message.senderName}</p>
+        <span>{message.timestamp?.getDate()}</span>
       </div>
-      <div className='messageInfo'>
-        <h4 className='messageText'>Hello World!</h4>
-        <img src="https://picsum.photos/200" alt="" className="messageImgs" />
-        <span className='messageTime'>10:23 PM</span>
+      <div className="messageContent">
+        <p>{message.text}</p>
+        <span>{message.senderId}</span>
       </div>
-      <div className='messageAction' onClick={handleMoreHorizClick}>
-        <IconButton>
-          <MoreHorizRoundedIcon />
-        </IconButton>
-      </div>
-      <Menu
-        id="message-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        MenuListProps={{
-          "aria-labelledby": "message-menu",
-        }}
-
-      >
-        <MenuItem onClick={handleMenuClose}>
-          <IconButton>
-            <ReplyRoundedIcon />
+      {message.senderId === currentUser?.uid && (
+        <div className="messageActions">
+          <IconButton onClick={handleMoreHorizClick}>
+            <MoreHorizRoundedIcon />
           </IconButton>
-          Reply
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-          <IconButton>
-            <ShortcutRoundedIcon />
-          </IconButton>
-          Forward
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-        <IconButton>
-            <ContentCopyRoundedIcon />
-          </IconButton>
-          Copy
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-          <IconButton>
-            <DeleteRoundedIcon />
-          </IconButton>
-          Delete
-        </MenuItem>
-      </Menu>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleMenuClose}>
+              <ReplyRoundedIcon />
+              Reply
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ShortcutRoundedIcon />
+              Forward
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <DeleteRoundedIcon />
+              Delete
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ContentCopyRoundedIcon />
+              Copy
+            </MenuItem>
+          </Menu>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Message
+export default Message;
