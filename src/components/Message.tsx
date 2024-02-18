@@ -16,8 +16,10 @@ interface MessageData {
   senderName: string | null | undefined;
   senderAvatar: string | undefined;
   date: Timestamp;
-  text?: string; 
-  img?: string;
+  message?: {
+    text?: string;
+    img?: string;
+  };
 }
 
 const Message: React.FC<{ message: MessageData }> = ({ message }) => {
@@ -57,8 +59,8 @@ const Message: React.FC<{ message: MessageData }> = ({ message }) => {
         </div>
       )}
       <div className="messageContent">
-        {message.text && <p className="messageText">{message.text}</p>}
-        {message.img && <img className="messageImg" src={message.img} alt="message" />}
+        {message.message?.text && <p className="messageText">{message.message?.text}</p>}
+        {message.message?.img && <img className="messageImg" src={message.message?.img} alt="message" />}
       </div>
       {message.senderId === currentUser?.uid && (
         <div className="messageActions">
