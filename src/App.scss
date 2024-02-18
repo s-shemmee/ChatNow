@@ -513,11 +513,11 @@ body {
             border-radius: 50%;
             border: 2px solid $primary-color;
             object-fit: cover;
-  
+
             &.online {
               border: 2px solid #00ff00;
             }
-  
+
             &.offline {
               border: 2px solid #ff0000;
             }
@@ -540,7 +540,7 @@ body {
               font-size: 0.8rem;
               font-weight: 500;
               color: $secondary-color;
-            }            
+            }
           }
         }
 
@@ -616,11 +616,11 @@ body {
           object-fit: cover;
 
           &[data-online="true"] {
-            border: 2px solid #00ff00; 
+            border: 2px solid #00ff00;
           }
 
           &[data-online="false"] {
-            border: 2px solid #ff0000; 
+            border: 2px solid #ff0000;
           }
         }
 
@@ -665,92 +665,127 @@ body {
 
     .Messages {
       display: flex;
-      align-items: center;
       justify-content: flex-start;
       flex-direction: column;
       width: 100%;
       height: 100%;
+      padding: 20px 10px;
       gap: 20px;
       overflow-y: auto;
-      ::-webkit-scrollbar {
-        width: 5px;
-      }
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: #7247f3;
-        border-radius: 10px;
-      }
 
-      .messageContent {
+      .message {
         display: flex;
-        justify-content: flex-start;
-        align-items: center;
         flex-direction: row;
-        width: 100%;
-        gap: 10px;
-        margin-bottom: 20px;
+        align-items: center;
+        gap: 20px;
 
-        .messageUser {
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          flex-direction: row;
-          gap: 10px;
+        &.Sender {
+          flex-direction: row-reverse;
 
-          .messageImg {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid $primary-color;
-            object-fit: cover;
+          > .SenderInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
 
-            &.online {
-              border: 2px solid #00ff00;
+            .SenderImg {
+              width: 40px;
+              height: 40px;
+              border: 2px solid $primary-color;
+              border-radius: 50%;
+              object-fit: cover;
             }
 
-            &.offline {
-              border: 2px solid #ff0000;
+            .timestamp {
+              font-size: 0.7rem;
+              font-weight: 500;
+              color: $secondary-color;
             }
           }
-        }
-
-        .messageInfo {
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          flex-direction: column;
-          gap: 5px;
-
-          .messageText {
-            font-size: 1rem;
-            font-weight: 500;
-            color: $accent-color-2;
-            white-space: pre-wrap;
+          > .messageContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 50%;
             word-break: break-all;
-            background-color: $primary-color;
-            padding: 10px;
-            border-radius: 10px 10px 10px 0px;
-          }
 
-          .messageImgs {
-            border-radius: 10px;
-          }
-          .messageTime {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: $secondary-color;
-            margin-top: 5px;
+            .messageText {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              padding: 10px 20px;
+              background-color: $primary-color;
+              color: #fafafa;
+              border-radius: 10px 10px 0px 10px;
+              font-size: 1rem;
+              font-weight: 500;
+              line-height: 1.6;
+              width: fit-content;
+            }
+
+            .messageImg {
+              width: 100%;
+              height: 200px;
+              border-radius: 10px;
+              object-fit: contain;
+            }
           }
         }
+        &.Receiver {
+          > .ReceiverInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
 
-        .messageAction button {
-          font-size: 1rem;
-          color: $primary-color;
-          cursor: pointer;
-          transition: all 0.3s ease-in-out;
+            .ReceiverImg {
+              width: 40px;
+              height: 40px;
+              border: 2px solid $primary-color;
+              border-radius: 50%;
+              object-fit: cover;
+            }
 
-          &:hover {
-            color: #7247f3;
+            .timestamp {
+              font-size: 0.7rem;
+              font-weight: 500;
+              color: $secondary-color;
+            }
+          }
+          > .messageContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 50%;
+            word-break: break-all;
+
+            .messageText {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              gap: 5px;
+              padding: 10px 20px;
+              background-color: #fff;
+              box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 10px;
+              border-radius: 10px 10px 10px 0px;
+              font-size: 1rem;
+              font-weight: 500;
+              line-height: 1.6;
+              width: fit-content;
+            }
+
+            .messageImg {
+              width: 100%;
+              height: 200px;
+              border-radius: 10px;
+              object-fit: contain;
+            }
           }
         }
       }
