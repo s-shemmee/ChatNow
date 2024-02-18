@@ -10,8 +10,10 @@ interface MessageData {
   senderName: string | null | undefined;
   senderAvatar: string | undefined;
   date: Timestamp;
-  text?: string; 
-  img?: string; 
+  message?: {
+    text?: string;
+    img?: string;
+  };
 }
 
 const Messages: React.FC = () => {
