@@ -7,7 +7,7 @@ interface ChatProps {
   chatId: string | null;
 }
 
-const Chat: React.FC<ChatProps> = ({ chatId }) => {
+const Chat: React.FC<ChatProps> = () => {
 
   return (
     <div className="chat">
