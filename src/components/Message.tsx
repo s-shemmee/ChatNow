@@ -5,16 +5,19 @@ import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import ShortcutRoundedIcon from '@mui/icons-material/ShortcutRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { Timestamp } from "firebase/firestore";
 
 interface MessageData {
-  senderId: string;
-  senderName: string;
-  senderAvatar: string;
-  text: string;
-  timestamp?: Date;
+  id: string;
+  senderId: string | undefined;
+  senderName: string | null | undefined;
+  senderAvatar: string | undefined;
+  date: Timestamp;
+  text?: string; 
+  img?: string;
 }
 
 const Message: React.FC<{ message: MessageData }> = ({ message }) => {
@@ -30,20 +33,32 @@ const Message: React.FC<{ message: MessageData }> = ({ message }) => {
     setAnchorEl(null);
   };
 
+  const formattedTime = message.date.toDate().toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
   return (
-    <div ref={ref} className={`message ${message.senderId === currentUser?.uid ? "Sender" : ""}`}>
-      <div className="messageInfo">
-        <img src={message.senderAvatar} alt={message.senderId} />
-        <p>{message.senderName}</p>
-        <span>{message.timestamp?.getDate()}</span>
-      </div>
+    <div ref={ref} className={`message ${message.senderId === currentUser?.uid ? "Sender" : "Receiver"}`}>
+      {message.senderId === currentUser?.uid ? (
+        <div className="SenderInfo">
+          <Tooltip title="You">
+            <img className="SenderImg" src={message.senderAvatar} alt={message.senderId} />
+          </Tooltip>
+          <span className="timestamp">{formattedTime}</span>
+        </div>
+      ) : (
+        <div className="ReceiverInfo">
+          <Tooltip title= {message.senderName ?? `User #${message.senderId}`}>
+            <img className="ReceiverImg" src={message.senderAvatar} alt={message.senderId} />
+          </Tooltip>
+          <span className="timestamp">{formattedTime}</span>
+        </div>
+      )}
       <div className="messageContent">
-        <p>{message.text}</p>
-        <span>{message.senderId}</span>
+        {message.text && <p className="messageText">{message.text}</p>}
+        {message.img && <img className="messageImg" src={message.img} alt="message" />}
       </div>
       {message.senderId === currentUser?.uid && (
         <div className="messageActions">
