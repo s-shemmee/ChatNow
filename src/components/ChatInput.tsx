@@ -24,10 +24,12 @@ const ChatInput: React.FC = () => {
     id: string;
     senderId: string | undefined;
     senderName: string | null | undefined;
-    senderAvatar: string | null | undefined;
+    senderAvatar: string | undefined;
     date: Timestamp;
-    text?: string; 
-    img?: string;  
+    message?: {
+      text?: string;
+      img?: string;
+    };
   }
 
   const handleSend = async () => {
@@ -36,7 +38,7 @@ const ChatInput: React.FC = () => {
         id: uuidv4(),
         senderId: currentUser?.uid,
         senderName: currentUser?.displayName,
-        senderAvatar: currentUser?.photoURL,
+        senderAvatar: currentUser?.photoURL || "",
         date: Timestamp.now(),
       };
   
@@ -50,7 +52,7 @@ const ChatInput: React.FC = () => {
         }, () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             // For image messages, store the URL in the 'img' property
-            message.img = downloadURL;
+            message.message = { img: downloadURL };
   
             // Add the message to the messages array
             await updateDoc(doc(db, "chats", state.chatId), {
@@ -60,7 +62,7 @@ const ChatInput: React.FC = () => {
         });
       } else {
         // For text messages, store the text in the 'text' property
-        message.text = text.trim();
+        message.message = { text: text.trim() };
   
         // Add the message to the messages array
         await updateDoc(doc(db, "chats", state.chatId), {
