@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { Timestamp, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import Message from "./Message";
 import { ChatContext } from "../context/ChatContext";
 
 interface MessageData {
   id: string;
-  senderId: string;
-  senderName: string;
-  senderAvatar: string;
-  text: string;
-  timestamp?: Date;
+  senderId: string | undefined;
+  senderName: string | null | undefined;
+  senderAvatar: string | undefined;
+  date: Timestamp;
+  text?: string; 
+  img?: string; 
 }
 
 const Messages: React.FC = () => {
