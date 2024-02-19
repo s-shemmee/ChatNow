@@ -554,7 +554,7 @@ body {
               font-size: 0.8rem;
               font-weight: 500;
               color: $secondary-color;
-            }            
+            }
           }
         }
 
@@ -818,80 +818,134 @@ body {
 
       form {
         width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        gap: 10px;
+
+        .imgPreviewContainer {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+
+          .imgPreview {
+            width: 80px;
+            height: 100%;
+            border-radius: 5px;
+            object-fit: cover;
+          }
+
+          .removeImgIcon {
+            font-size: 1.5rem;
+            color: $primary-color;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              color: #7247f3;
+            }
+          }
+        }
       }
 
-      .inputBase {
+      .filePreviewContainer {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         width: 100%;
-        height: 100%;
-        border: none;
-        outline: none;
-        background-color: transparent;
-        font-size: 1rem;
-        font-weight: 500;
-        color: $secondary-color;
-        margin-left: 10px;
+        gap: 5px;
 
-        &::placeholder {
+        .fileNamePreview {
           font-size: 1rem;
           font-weight: 500;
           color: $secondary-color;
-          font-style: italic;
+        }
+        .removeFileIcon {
+          font-size: 1.5rem;
+          color: $primary-color;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            color: #7247f3;
+          }
+        }
+      }
+    }
+
+    .inputBase {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      font-size: 1rem;
+      font-weight: 500;
+      color: $secondary-color;
+      margin-left: 10px;
+
+      &::placeholder {
+        font-size: 1rem;
+        font-weight: 500;
+        color: $secondary-color;
+        font-style: italic;
+      }
+    }
+
+    .chatIcons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row;
+      gap: 10px;
+      width: 100%;
+
+      .chatOptions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        .chatIcon {
+          font-size: 1.5rem;
+          color: $primary-color;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            color: #7247f3;
+          }
         }
       }
 
-      .chatIcons {
+      .chatSend {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         flex-direction: row;
         gap: 10px;
-        width: 100%;
 
-        .chatOptions {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
+        .chatIcon {
+          font-size: 1.5rem;
+          color: $primary-color;
+          transition: all 0.3s ease-in-out;
 
-          .chatIcon {
-            font-size: 1.5rem;
-            color: $primary-color;
-            transition: all 0.3s ease-in-out;
-
-            &:hover {
-              color: #7247f3;
-            }
+          &:hover {
+            color: #7247f3;
           }
         }
 
-        .chatSend {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: row;
-          gap: 10px;
+        .chatIconSend {
+          font-size: 2rem;
+          color: #fff;
+          background-color: $primary-color;
+          border-radius: 50%;
 
-          .chatIcon {
-            font-size: 1.5rem;
-            color: $primary-color;
-            transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
 
-            &:hover {
-              color: #7247f3;
-            }
-          }
-
-          .chatIconSend {
-            font-size: 2rem;
-            color: #fff;
-            background-color: $primary-color;
-            border-radius: 50%;
-
-            transition: all 0.3s ease-in-out;
-
-            &:hover {
-              background-color: #7247f3;
-            }
+          &:hover {
+            background-color: #7247f3;
           }
         }
       }
