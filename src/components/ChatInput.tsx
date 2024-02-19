@@ -9,6 +9,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import MicRoundedIcon from '@mui/icons-material/MicRounded';
 import MoodRoundedIcon from '@mui/icons-material/MoodRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import FormatColorTextRoundedIcon from '@mui/icons-material/FormatColorTextRounded';
 import { IconButton, InputBase, Tooltip } from "@mui/material";
 
@@ -29,6 +30,7 @@ const ChatInput: React.FC = () => {
     message?: {
       text?: string;
       img?: string;
+      file?: string; // TODO: files like pdf doc txt ...
     };
   }
 
@@ -63,7 +65,7 @@ const ChatInput: React.FC = () => {
       } else {
         // For text messages, store the text in the 'text' property
         message.message = { text: text.trim() };
-  
+
         // Add the message to the messages array
         await updateDoc(doc(db, "chats", state.chatId), {
           messages: arrayUnion(message),
@@ -77,12 +79,45 @@ const ChatInput: React.FC = () => {
   const handleFileIconClick = () => {
     fileInputRef.current?.click();
   };
+
+  const handleRemoveFile = () => {
+    setImg(null);
+  };
+
+  const renderFilePreview = () => {
+    if (img) {
+      // Check if the selected file is an image
+      if (img.type.startsWith("image/")) {
+        return (
+          <div className="imgPreviewContainer">
+            <img src={URL.createObjectURL(img)} alt="Image Preview" className="imgPreview" />
+            <IconButton className="removeImgIcon" onClick={handleRemoveFile}>
+              <CloseRoundedIcon />
+            </IconButton>
+          </div>
+        );
+      } else {
+        // For files like pdf doc txt ...
+        return (
+          <div className="filePreviewContainer">
+            <p>{img.name}</p>
+            <IconButton className="removeFileIcon" onClick={handleRemoveFile}>
+              <CloseRoundedIcon />
+            </IconButton>
+          </div>
+        );
+      
+      }
+    }
+    return null;
+  };
   
   return (
     <div className="chatInput">
       <form>
+        {renderFilePreview()}
         <InputBase
-          placeholder="Type a message"
+          placeholder={img ? "" : "Type a message..."}
           inputProps={{ 'aria-label': 'type a message' }}
           className="inputBase"
           name="input"
