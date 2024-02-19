@@ -7,8 +7,8 @@ import { db } from "../firebase";
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import MarkChatUnreadRoundedIcon from '@mui/icons-material/MarkChatUnreadRounded';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import { IconButton, Tooltip } from "@mui/material";
+import { Block } from "@mui/icons-material";
+import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -36,6 +36,15 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const { dispatch } = useContext(ChatContext);
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     const unsubscribe = currentUser && onSnapshot(
@@ -88,6 +97,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
 
       return (
         <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
+          {/* individual chat item */}
           <div className="chatUserInfo">
             <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
             <div className="chatContent">
@@ -99,7 +109,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
             </div>
           </div>
           <div className="chatUserDetails">
-            <IconButton onClick={(event) => handleMoreHorizClick(event, chatId)}>
+            <IconButton onClick={handleClick}>
               <Tooltip title="More" className="button">
                 <MoreHorizRoundedIcon />
               </Tooltip>
@@ -107,29 +117,40 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
             {formattedTime && <p className="timestamp">{formattedTime}</p>}
           </div>
           <Menu
-            id={`menu-${chatId}`}
+            id="basic-menu"
             anchorEl={anchorEl}
-            open={Boolean(anchorEl && anchorEl.getAttribute('data-chat-id') === chatId)}
-            onClose={handleMenuClose}
-            className="Menu"
+            open={open}
+            onClose={handleClose}
           >
             <MenuItem>
-              <IconButton>
-                <MarkChatUnreadRoundedIcon />
-              </IconButton>
-              Mark as unread
+              <ListItemIcon>
+                <MarkChatUnreadRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+              <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Mark as unread
+                </Typography>
+              </ListItemText>
             </MenuItem>
             <MenuItem>
-              <IconButton>
-                <ArchiveRoundedIcon />
-              </IconButton>
-              Archive Chat
+              <ListItemIcon>
+                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Archive Chat
+                </Typography>
+              </ListItemText>
             </MenuItem>
             <MenuItem>
-              <IconButton>
-                <AutoAwesomeRoundedIcon />
-              </IconButton>
-              Block User
+              <ListItemIcon>
+                <Block sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Block User
+                </Typography>
+              </ListItemText>
             </MenuItem>
           </Menu>
         </div>
@@ -137,19 +158,13 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
     });
   };
 
-  const handleMoreHorizClick = (event: React.MouseEvent<HTMLElement>, chatId: string) => {
-    setAnchorEl(event.currentTarget);
-    event.currentTarget.setAttribute('data-chat-id', chatId);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <div className="chatsContainer">
       <Searchbar />
       <div className="chatsList">
+        <Divider textAlign="left">
+          <p className="chatTitle">Inbox</p>
+        </Divider>
         {renderChatsList()}
       </div>
     </div>
