@@ -492,7 +492,7 @@ body {
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        height: 80px;
+        height: 90px;
         background-color: #fff;
         border-radius: 20px;
         padding: 10px 20px;
@@ -508,8 +508,8 @@ body {
           gap: 20px;
 
           .chatUserImg {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid $primary-color;
             object-fit: cover;
@@ -523,24 +523,38 @@ body {
             }
           }
 
-          .chatUser {
+          .chatContent {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            justify-content: center;
             text-align: left;
             gap: 10px;
 
-            .chatUserName {
-              font-size: 1rem;
-              font-weight: 600;
-              color: $primary-color;
+            .chatUser {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              text-align: left;
+
+              .chatUserName {
+                font-size: 1rem;
+                font-weight: 600;
+                color: $primary-color;
+              }
+
+              .chatUserProfession {
+                font-size: 0.7rem;
+                font-weight: 500;
+                color: $secondary-color;
+              }
             }
 
-            .lastMessage {
+            .chatLastMessage {
               font-size: 0.8rem;
               font-weight: 500;
               color: $secondary-color;
-            }
+            }            
           }
         }
 
