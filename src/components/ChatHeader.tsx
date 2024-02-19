@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 
 const ChatHeader: React.FC = () => {
@@ -29,11 +29,13 @@ const ChatHeader: React.FC = () => {
     setIsInfoFilled(!isInfoFilled);
   };
 
-  const handleMoreVertClick = (event: React.MouseEvent<HTMLElement>) => {
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
@@ -108,41 +110,48 @@ const ChatHeader: React.FC = () => {
           >
             {isInfoFilled ? <IconButton><Tooltip title={`Chat Created at ${chatCreationTime}`} arrow><InfoIcon /></Tooltip></IconButton> : <IconButton><InfoOutlinedIcon /></IconButton>}
           </div>
-          <div
-            className="chatAction"
-            onClick={handleMoreVertClick}
-          >
-            <IconButton>
+          <div className="chatAction" >
+            <IconButton onClick={handleClick}>
               <Tooltip title="More">
                 <MoreVertOutlinedIcon />
               </Tooltip>
             </IconButton>
           </div>
           <Menu
+            id="basic-menu"
             anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            className="Menu"
+            open={open}
+            onClose={handleClose}
           >
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <NotificationsOffRoundedIcon />
-              </IconButton>
-              <span>Notifications</span>
+            <MenuItem>
+              <ListItemIcon>
+                <NotificationsOffRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+              <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Notifications
+                </Typography>
+              </ListItemText>
             </MenuItem>
-
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <ArchiveRoundedIcon />
-              </IconButton>
-              <span>Archive</span>
+            <MenuItem>
+              <ListItemIcon>
+                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Archive Chat
+                </Typography>
+              </ListItemText>
             </MenuItem>
-
-            <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <DeleteRoundedIcon />
-              </IconButton>
-              <span>Delete</span>
+            <MenuItem>
+              <ListItemIcon>
+                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                  Delete
+                </Typography>
+              </ListItemText>
             </MenuItem>
           </Menu>
         </div>
