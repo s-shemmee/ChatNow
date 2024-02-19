@@ -364,7 +364,7 @@ body {
         background-color: #fff;
         border-radius: 20px;
         padding: 10px 20px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         box-shadow: 0px 8px 10px rgba(9, 9, 9, 0.1);
 
         input[type="text"] {
@@ -474,7 +474,6 @@ body {
 
     .chatsList {
       display: flex;
-      align-items: center;
       justify-content: flex-start;
       flex-direction: column;
       width: 100%;
@@ -485,6 +484,12 @@ body {
 
       ::-webkit-scrollbar {
         width: 5px;
+      }
+
+      .chatTitle {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $primary-color;
       }
 
       .chatCard {
