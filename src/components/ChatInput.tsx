@@ -111,6 +111,13 @@ const ChatInput: React.FC = () => {
     }
     return null;
   };
+
+  const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
   
   return (
     <div className="chatInput">
@@ -123,6 +130,7 @@ const ChatInput: React.FC = () => {
           name="input"
           onChange={(e) => setText(e.target.value)}
           value={text}
+          onKeyDown={handleEnterKey}
         />
       </form>
       <div className="chatIcons">
