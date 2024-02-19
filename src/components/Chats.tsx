@@ -5,7 +5,12 @@ import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { db } from "../firebase";
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import { Tooltip } from "@mui/material";
+import MarkChatUnreadRoundedIcon from '@mui/icons-material/MarkChatUnreadRounded';
+import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import { IconButton, Tooltip } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 interface ChatData {
   userInfo: {
@@ -15,7 +20,10 @@ interface ChatData {
     profession: string;
   };
   date: Timestamp;
-  lastMessage?: string;
+  lastMessage: {
+    text: string;
+    img: string;
+  }
 }
 
 interface ChatsProps {
@@ -27,6 +35,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const currentUser = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     const unsubscribe = currentUser && onSnapshot(
@@ -81,20 +90,60 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
           <div className="chatUserInfo">
             <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
-            <div className="chatUser">
-              <h4 className="chatUserName">{userInfo.displayName}</h4>
-              <p className="lastMessage">{lastMessage || "No messages yet"}</p>
+            <div className="chatContent">
+              <div className="chatUser">
+                <h4 className="chatUserName">{userInfo.displayName}</h4>
+                <span className="chatUserProfession">{userInfo.profession}</span>
+              </div>
+              <p className="chatLastMessage">{lastMessage?.text ? lastMessage.text :  'No  messages yet'}</p>
             </div>
           </div>
           <div className="chatUserDetails">
-            <Tooltip title="More Options" className="button">
-              <MoreHorizRoundedIcon />
-            </Tooltip>
+            <IconButton onClick={(event) => handleMoreHorizClick(event, chatId)}>
+              <Tooltip title="More" className="button">
+                <MoreHorizRoundedIcon />
+              </Tooltip>
+            </IconButton>
             {formattedTime && <p className="timestamp">{formattedTime}</p>}
           </div>
+          <Menu
+            id={`menu-${chatId}`}
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl && anchorEl.getAttribute('data-chat-id') === chatId)}
+            onClose={handleMenuClose}
+            className="Menu"
+          >
+            <MenuItem>
+              <IconButton>
+                <MarkChatUnreadRoundedIcon />
+              </IconButton>
+              Mark as unread
+            </MenuItem>
+            <MenuItem>
+              <IconButton>
+                <ArchiveRoundedIcon />
+              </IconButton>
+              Archive Chat
+            </MenuItem>
+            <MenuItem>
+              <IconButton>
+                <AutoAwesomeRoundedIcon />
+              </IconButton>
+              Block User
+            </MenuItem>
+          </Menu>
         </div>
       );
     });
+  };
+
+  const handleMoreHorizClick = (event: React.MouseEvent<HTMLElement>, chatId: string) => {
+    setAnchorEl(event.currentTarget);
+    event.currentTarget.setAttribute('data-chat-id', chatId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
