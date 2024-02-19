@@ -77,7 +77,7 @@ const Searchbar: React.FC = () => {
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.avatarURL,
-            profession: user.profession || "",
+            profession: user.profession,
             userMetadata: {
               creationTime: userMetadata.creationTime || null,
               lastSignInTime: userMetadata.lastSignInTime || null,
@@ -91,6 +91,7 @@ const Searchbar: React.FC = () => {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
+            profession:  "",
             userMetadata: {
               creationTime: currentUser.metadata.creationTime || null,
               lastSignInTime: currentUser.metadata.lastSignInTime || null,
@@ -112,7 +113,9 @@ const Searchbar: React.FC = () => {
       <div className="searchForm">
         <input
           type="text"
-          placeholder="Search for a user"
+          name="username"
+          id="username"
+          placeholder="Search for a user..."
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           onKeyDown={handleKey}
