@@ -7,7 +7,7 @@ import { db } from "../firebase";
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import MarkChatUnreadRoundedIcon from '@mui/icons-material/MarkChatUnreadRounded';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import { Block } from "@mui/icons-material";
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -144,11 +144,11 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <Block sx={{ color: "#9474f4", fontSize:"20px" }}/>
+                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
               </ListItemIcon>
               <ListItemText>
                 <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Block User
+                  Delete Chat
                 </Typography>
               </ListItemText>
             </MenuItem>

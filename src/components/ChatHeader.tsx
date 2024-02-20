@@ -11,9 +11,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
+import { Block } from "@mui/icons-material";
 
 const ChatHeader: React.FC = () => {
   const { state } = useContext(ChatContext);
@@ -139,17 +139,17 @@ const ChatHeader: React.FC = () => {
               </ListItemIcon>
               <ListItemText>
                 <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Archive Chat
+                  Archive
                 </Typography>
               </ListItemText>
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+                <Block sx={{ color: "#9474f4", fontSize:"20px" }}/>
               </ListItemIcon>
               <ListItemText>
                 <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Delete
+                  Block
                 </Typography>
               </ListItemText>
             </MenuItem>
