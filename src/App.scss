@@ -692,6 +692,12 @@ body {
       gap: 20px;
       overflow-y: auto;
 
+      .noMessages {
+        text-align: center;
+        margin-top: 25%;
+        opacity: 0.5;
+      }
+
       .message {
         display: flex;
         flex-direction: row;
