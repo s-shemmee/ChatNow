@@ -2,25 +2,15 @@
 
 $font-family: "Poppins", sans-serif;
 $primary-color: #9474f4;
-$secondary-color: #5e5e5e;
-$background-gradient: radial-gradient(
-    at 62% 31%,
-    hsla(236, 90%, 67%, 1) 0px,
-    transparent 50%
-  ),
-  radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%),
-  radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%),
-  radial-gradient(at 97% 38%, hsla(227, 97%, 73%, 1) 0px, transparent 50%),
-  radial-gradient(at 90% 9%, hsla(222, 90%, 63%, 1) 0px, transparent 50%),
-  radial-gradient(at 87% 15%, hsla(238, 95%, 75%, 1) 0px, transparent 50%),
-  radial-gradient(at 12% 83%, hsla(355, 99%, 62%, 1) 0px, transparent 50%);
-
+$primary-color-dark: #7247f3;
+$grey: #5e5e5e;
+$white: #fff;
 $accent-color-1: #f3f3f9; // Background color for forms
-$accent-color-2: #fff; // Background color for form elements
-$accent-color-3: #f2efff; // Background color for chats
-$accent-color-4: #f4f4fa; // Background color for chat main section
+$accent-color-2: #f2efff; // Background color for chats
+$accent-color-3: #f4f4fa; // Background color for chat main section
 $online-color: #00ff00; // Online status color
 $offline-color: #ff0000; // Offline status color
+$background-gradient: radial-gradient(at 62% 31%,hsla(236, 90%, 67%, 1) 0px,  transparent 50%), radial-gradient(at 95% 77%, hsla(354, 66%, 72%, 1) 0px, transparent 50%), radial-gradient(at 61% 42%, hsla(21, 91%, 65%, 1) 0px, transparent 50%), radial-gradient(at 97% 38%, hsla(227, 97%, 73%, 1) 0px, transparent 50%), radial-gradient(at 90% 9%, hsla(222, 90%, 63%, 1) 0px, transparent 50%), radial-gradient(at 87% 15%, hsla(238, 95%, 75%, 1) 0px, transparent 50%), radial-gradient(at 12% 83%, hsla(355, 99%, 62%, 1) 0px, transparent 50%);
 
 :root {
   font-family: $font-family;
@@ -55,7 +45,7 @@ body {
   flex-direction: column;
   padding: 30px 10px;
   width: 500px;
-  background-color: #f3f3f9;
+  background-color: $accent-color-1;
   border-radius: 30px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -93,7 +83,7 @@ body {
     h3 {
       font-size: 1.1rem;
       font-weight: 500;
-      color: $secondary-color;
+      color: $grey;
 
       span {
         color: $primary-color;
@@ -115,14 +105,14 @@ body {
       justify-content: center;
       width: 80%;
       margin-bottom: 20px;
-      background-color: #fff;
+      background-color: $white;
       border-radius: 20px;
       padding: 15px;
 
       label {
         font-size: 1rem;
         font-weight: 500;
-        color: $secondary-color;
+        color: $grey;
         margin-bottom: 10px;
         text-align: left;
       }
@@ -142,14 +132,14 @@ body {
           outline: none;
           font-size: 1rem;
           font-weight: 400;
-          color: $secondary-color;
+          color: $grey;
           background-color: transparent;
           margin-left: 10px;
 
           &::placeholder {
             font-size: 1rem;
             font-weight: 400;
-            color: $secondary-color;
+            color: $grey;
             font-style: italic;
           }
         }
@@ -178,7 +168,7 @@ body {
         label {
           font-size: 1rem;
           font-weight: 500;
-          color: $secondary-color;
+          color: $grey;
         }
       }
 
@@ -191,7 +181,7 @@ body {
         text-decoration: none;
 
         &:hover {
-          color: #8965f5;
+          color: $primary-color-dark;
         }
       }
     }
@@ -218,7 +208,7 @@ body {
     span {
       font-size: 1rem;
       font-weight: 400;
-      color: $secondary-color;
+      color: $grey;
       margin-top: 10px;
 
       a {
@@ -240,7 +230,7 @@ body {
   justify-content: flex-start;
   width: 70vw;
   height: 800px;
-  background-color: #f3f3f9;
+  background-color: $accent-color-1;
   border-radius: 25px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -265,7 +255,7 @@ body {
     p {
       font-size: 1rem;
       font-weight: 400;
-      color: $secondary-color;
+      color: $grey;
     }
   }
 
@@ -274,7 +264,7 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
-    background-color: #fff;
+    background-color: $white;
     width: 60px;
     height: 100%;
     padding: 20px 5px;
@@ -303,7 +293,7 @@ body {
         transition: all 0.3s ease-in-out;
 
         &:hover {
-          color: #7247f3;
+          color: $primary-color-dark;
         }
       }
     }
@@ -322,7 +312,7 @@ body {
         transition: all 0.3s ease-in-out;
 
         &:hover {
-          color: #7247f3;
+          color: $primary-color-dark;
         }
       }
 
@@ -342,7 +332,7 @@ body {
     justify-content: flex-start;
     flex-direction: column;
     width: 30%;
-    background-color: #f2efff;
+    background-color: $accent-color-2;
     height: 100%;
     padding: 20px 10px;
     overflow-y: auto;
@@ -361,7 +351,7 @@ body {
         flex-direction: row;
         width: 100%;
         height: 60px;
-        background-color: #fff;
+        background-color: $white;
         border-radius: 20px;
         padding: 10px 20px;
         margin-bottom: 10px;
@@ -375,13 +365,13 @@ body {
           background-color: transparent;
           font-size: 1rem;
           font-weight: 500;
-          color: $secondary-color;
+          color: $grey;
           margin-left: 10px;
 
           &::placeholder {
             font-size: 1rem;
             font-weight: 400;
-            color: $secondary-color;
+            color: $grey;
             font-style: italic;
           }
         }
@@ -393,7 +383,7 @@ body {
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #7247f3;
+            color: $primary-color-dark;
           }
         }
       }
@@ -429,11 +419,11 @@ body {
             object-fit: cover;
 
             &.online {
-              border: 2px solid #00ff00;
+              border: 2px solid $online-color;
             }
 
             &.offline {
-              border: 2px solid #ff0000;
+              border: 2px solid $offline-color;
             }
           }
 
@@ -498,7 +488,7 @@ body {
         justify-content: space-between;
         width: 100%;
         height: 90px;
-        background-color: #fff;
+        background-color: $white;
         border-radius: 20px;
         padding: 10px 20px;
         gap: 10px;
@@ -520,11 +510,11 @@ body {
             object-fit: cover;
 
             &.online {
-              border: 2px solid #00ff00;
+              border: 2px solid $online-color;
             }
 
             &.offline {
-              border: 2px solid #ff0000;
+              border: 2px solid $offline-color;
             }
           }
 
@@ -551,14 +541,14 @@ body {
               .chatUserProfession {
                 font-size: 0.7rem;
                 font-weight: 500;
-                color: $secondary-color;
+                color: $grey;
               }
             }
 
             .chatLastMessage {
               font-size: 0.8rem;
               font-weight: 500;
-              color: $secondary-color;
+              color: $grey;
             }
           }
         }
@@ -573,7 +563,7 @@ body {
           .timestamp {
             font-size: 0.7rem;
             font-weight: 500;
-            color: $secondary-color;
+            color: $grey;
           }
 
           .button {
@@ -583,7 +573,7 @@ body {
             transition: all 0.3s ease-in-out;
 
             &:hover {
-              color: #7247f3;
+              color: $primary-color-dark;
             }
           }
         }
@@ -598,7 +588,7 @@ body {
     flex-direction: column;
     width: 70%;
     height: 100%;
-    background-color: #f4f4fa;
+    background-color: $accent-color-3;
     padding: 20px 10px;
     overflow-y: auto;
     ::-webkit-scrollbar {
@@ -615,7 +605,7 @@ body {
       justify-content: space-between;
       width: 100%;
       height: 80px;
-      background-color: #fff;
+      background-color: $white;
       border-radius: 20px;
       padding: 10px 20px;
       margin-bottom: 20px;
@@ -635,11 +625,11 @@ body {
           object-fit: cover;
 
           &[data-online="true"] {
-            border: 2px solid #00ff00;
+            border: 2px solid $online-color;
           }
 
           &[data-online="false"] {
-            border: 2px solid #ff0000;
+            border: 2px solid $offline-color;
           }
         }
 
@@ -658,7 +648,7 @@ body {
           .chatStatus {
             font-size: 0.8rem;
             font-weight: 500;
-            color: $secondary-color;
+            color: $grey;
           }
         }
       }
@@ -676,7 +666,7 @@ body {
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #7247f3;
+            color: $primary-color-dark;
           }
         }
       }
@@ -725,7 +715,7 @@ body {
             .timestamp {
               font-size: 0.7rem;
               font-weight: 500;
-              color: $secondary-color;
+              color: $grey;
             }
           }
           > .messageContent {
@@ -778,7 +768,7 @@ body {
             .timestamp {
               font-size: 0.7rem;
               font-weight: 500;
-              color: $secondary-color;
+              color: $grey;
             }
           }
           > .messageContent {
@@ -796,7 +786,7 @@ body {
               flex-direction: column;
               gap: 5px;
               padding: 10px 20px;
-              background-color: #fff;
+              background-color: $white;
               box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 10px;
               border-radius: 10px 10px 10px 0px;
               font-size: 1rem;
@@ -823,7 +813,7 @@ body {
       flex-direction: column;
       width: 100%;
       gap: 10px;
-      background-color: #fff;
+      background-color: $white;
       border-radius: 20px;
       padding: 20px;
 
@@ -855,7 +845,7 @@ body {
             transition: all 0.3s ease-in-out;
 
             &:hover {
-              color: #7247f3;
+              color: $primary-color-dark;
             }
           }
         }
@@ -871,7 +861,7 @@ body {
         .fileNamePreview {
           font-size: 1rem;
           font-weight: 500;
-          color: $secondary-color;
+          color: $grey;
         }
         .removeFileIcon {
           font-size: 1.5rem;
@@ -880,7 +870,7 @@ body {
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #7247f3;
+            color: $primary-color-dark;
           }
         }
       }
@@ -894,13 +884,13 @@ body {
       background-color: transparent;
       font-size: 1rem;
       font-weight: 500;
-      color: $secondary-color;
+      color: $grey;
       margin-left: 10px;
 
       &::placeholder {
         font-size: 1rem;
         font-weight: 500;
-        color: $secondary-color;
+        color: $grey;
         font-style: italic;
       }
     }
@@ -925,7 +915,7 @@ body {
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #7247f3;
+            color: $primary-color-dark;
           }
         }
       }
@@ -943,20 +933,20 @@ body {
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            color: #7247f3;
+            color: $primary-color-dark;
           }
         }
 
         .chatIconSend {
           font-size: 2rem;
-          color: #fff;
+          color: $white;
           background-color: $primary-color;
           border-radius: 50%;
 
           transition: all 0.3s ease-in-out;
 
           &:hover {
-            background-color: #7247f3;
+            background-color: $primary-color-dark;
           }
         }
       }
