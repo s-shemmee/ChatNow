@@ -35,12 +35,17 @@ const Searchbar: React.FC = () => {
     try {
       const q = query(collection(db, "users"), where("displayName", "==", username));
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        setUser(doc.data() as UserData);
-      });
-      setError(false); 
+
+      if (querySnapshot.empty) {
+        setError(true);
+        return;
+      } else {
+        setError(false);
+      }
+      
+      setUser(querySnapshot.docs[0].data() as UserData);
     } catch (err) {
-      setError(true);
+      console.error("Error searching for user:", err);
     }
   };
   
@@ -51,11 +56,11 @@ const Searchbar: React.FC = () => {
   };
 
   const handleSelect = async () => {
-    if (!currentUser || !user) {
-      // Ensure currentUser and user are defined
+    if (!currentUser || !user || currentUser.uid === user.uid) {
+      // Ensure currentUser and user are defined and not the same user
       return;
     }
-  
+
     const combinedId = currentUser.uid > user.uid
       ? `${currentUser.uid}${user.uid}`
       : `${user.uid}${currentUser.uid}`;
@@ -91,7 +96,6 @@ const Searchbar: React.FC = () => {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
-            profession:  "",
             userMetadata: {
               creationTime: currentUser.metadata.creationTime || null,
               lastSignInTime: currentUser.metadata.lastSignInTime || null,
@@ -113,8 +117,6 @@ const Searchbar: React.FC = () => {
       <div className="searchForm">
         <input
           type="text"
-          name="username"
-          id="username"
           placeholder="Search for a user..."
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -128,22 +130,24 @@ const Searchbar: React.FC = () => {
       {user && (
         <div className="searchResult">
           <div className="searchResultUser">
-            <img src={user.avatarURL} alt={user.displayName} className="searchResultUserImg"/>
+            <img src={user.avatarURL} alt={user.displayName} className="searchResultUserImg" />
             <div className="searchResultUserInfo">
               <h4 className="searchResultUserName">{user.displayName}</h4>
               <p className="searchResultUserProfession">{user.profession}</p>
             </div>
             <div className="searchResultbuttons">
-              <Tooltip title="Say Hey!" onClick={handleSelect}>
+              {!currentUser || currentUser.uid !== user.uid && (
                 <IconButton>
-                  <WavingHandRoundedIcon className="searchResultbutton"/>
+                  <Tooltip title="Say Hey!" onClick={handleSelect}>
+                    <WavingHandRoundedIcon className="searchResultbutton" />
+                  </Tooltip>
                 </IconButton>
-              </Tooltip>
-              <Tooltip title="Remove">
-                <IconButton onClick={() => setUser(null)}>
-                  <CloseRoundedIcon className="searchResultbutton"/>
-                </IconButton>
-              </Tooltip>
+              )}
+              <IconButton onClick={() => setUser(null)}>
+                <Tooltip title="Remove">
+                  <CloseRoundedIcon className="searchResultbutton" />
+                </Tooltip>
+              </IconButton>
             </div>
           </div>
         </div>
