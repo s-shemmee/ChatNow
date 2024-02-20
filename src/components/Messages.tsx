@@ -30,13 +30,15 @@ const Messages: React.FC = () => {
     };
   }, [state.chatId]);
 
-  console.log(state.chatId, messages);
-
   return (
     <div className="Messages">
-      {messages.map((message) => (
-        <Message key={message.id} message={message} />
-      ))}
+      {messages.length > 0 ? (
+        messages.map((message) => (
+          <Message key={message.id} message={message} />
+        ))
+      ) : (
+        <p className="noMessages">No messages in this chat so far. Feel free to begin! 😄</p>
+      )}
     </div>
   );
 };
