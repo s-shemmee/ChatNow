@@ -1,6 +1,4 @@
-import React, { useRef, useContext, useState } from "react";
-import { ChatContext } from "../context/ChatContext";
-import AuthContext from "../context/AuthContext";
+import React, { useRef, useContext, useState, useEffect } from "react";
 import { arrayUnion, doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -12,6 +10,20 @@ import MoodRoundedIcon from '@mui/icons-material/MoodRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import FormatColorTextRoundedIcon from '@mui/icons-material/FormatColorTextRounded';
 import { IconButton, InputBase, Tooltip } from "@mui/material";
+import { ChatContext } from "../context/ChatContext";
+import AuthContext from "../context/AuthContext";
+
+interface Message {
+  id: string;
+  senderId: string | undefined;
+  senderName: string | null | undefined;
+  senderAvatar: string | undefined;
+  date: Timestamp;
+  message?: {
+    text?: string;
+    img?: string;
+  };
+}
 
 const ChatInput: React.FC = () => {
   const [text, setText] = useState<string>("");
@@ -21,18 +33,11 @@ const ChatInput: React.FC = () => {
   const { state } = useContext(ChatContext);
   const currentUser = useContext(AuthContext);
 
-  interface Message {
-    id: string;
-    senderId: string | undefined;
-    senderName: string | null | undefined;
-    senderAvatar: string | undefined;
-    date: Timestamp;
-    message?: {
-      text?: string;
-      img?: string;
-      file?: string; // TODO: files like pdf doc txt ...
-    };
-  }
+  // Reset input state when the chatId changes
+  useEffect(() => {
+    setText("");
+    setImg(null);
+  }, [state.chatId]);
 
   const handleSend = async () => {
     if (text.trim() || img) {
@@ -97,7 +102,6 @@ const ChatInput: React.FC = () => {
           </div>
         );
       } else {
-        // For files like pdf doc txt ...
         return (
           <div className="filePreviewContainer">
             <p>{img.name}</p>
@@ -106,7 +110,6 @@ const ChatInput: React.FC = () => {
             </IconButton>
           </div>
         );
-      
       }
     }
     return null;
