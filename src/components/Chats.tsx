@@ -141,7 +141,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
       // Determine the value of truncatedMessage based on message type
       const truncatedMessage = lastMessage?.message?.text
         ? lastMessage.message.text.length > 20
-          ? `${lastMessage.message.text.slice(0, 27)}...`
+          ? `${lastMessage.message.text.slice(0, 20)}...`
           : lastMessage.message.text
         : lastMessage?.message?.img
         ? "Attachment"
