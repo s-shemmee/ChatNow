@@ -9,6 +9,7 @@ import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import Checkbox from "@mui/material/Checkbox";
+import { Typography } from "@mui/material";
 import LoadingScreen from "../components/LoadingScreen";
 
 const Login: React.FC = () => {
@@ -20,6 +21,7 @@ const Login: React.FC = () => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -42,17 +44,25 @@ const Login: React.FC = () => {
       setLoading(true);
 
       const { email, password } = formData;
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+
+      // Custom validation
+      if (!email) {
+        setErrorMessage("Please enter your email.");
+        return;
+      }
+
+      if (!password) {
+        setErrorMessage("Please enter your password.");
+        return;
+      }
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       // Handle successful login 
       console.log("User logged in successfully:", user);
 
-      // fetch the lastest user metadata from Firebase Auth
+      // fetch the latest user metadata from Firebase Auth
       const updatedUser = auth.currentUser;
       const userMetadata = updatedUser?.metadata;
 
@@ -67,15 +77,10 @@ const Login: React.FC = () => {
         });
       }
 
-      console.log("User metadata updated in Firestore!", userMetadata);
-
       // Redirect to the home page
       navigate("/");
     } catch (error) {
-      console.error(
-        "Login failed:",
-        (error as Error)?.message || "An error occurred"
-      );
+      setErrorMessage("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -159,6 +164,13 @@ const Login: React.FC = () => {
             Forget password?
           </Link>
         </div>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="error-message">
+            <Typography color="error">{errorMessage}</Typography>
+          </div>
+        )}
 
         {/* Submit Button */}
         <button className="formButton" type="submit">
