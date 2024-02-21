@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setCurrentUser(user);
       setLoading(false); // Set loading to false once the authentication state is determined
-      console.log("User state after reload:", user);
     });
 
     // Cleanup function
