@@ -57,7 +57,7 @@ const ChatHeader: React.FC = () => {
         const distance = formatDistanceToNow(new Date(lastSignInTime), {
           addSuffix: true,
         });
-        return `Last seen ${distance} - ${onlineStatus}`;
+        return `${onlineStatus} - Last seen ${distance}`;
       } else {
         return "Unavailable";
       }
