@@ -5,7 +5,7 @@ import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import ShortcutRoundedIcon from '@mui/icons-material/ShortcutRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Timestamp } from "firebase/firestore";
@@ -24,16 +24,18 @@ interface MessageData {
 
 const Message: React.FC<{ message: MessageData }> = ({ message }) => {
   const currentUser = useContext(AuthContext);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  const handleMoreHorizClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   const formattedTime = message.date.toDate().toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
 
@@ -64,29 +66,56 @@ const Message: React.FC<{ message: MessageData }> = ({ message }) => {
       </div>
       {message.senderId === currentUser?.uid && (
         <div className="messageActions">
-          <IconButton onClick={handleMoreHorizClick}>
-            <MoreHorizRoundedIcon />
+          <IconButton onClick={handleClick}>
+            <Tooltip title="More options">
+              <MoreHorizRoundedIcon />
+            </Tooltip>
           </IconButton>
           <Menu
+            id="basic-menu"
             anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            open={open}
+            onClose={handleClose}
           >
-            <MenuItem onClick={handleMenuClose}>
-              <ReplyRoundedIcon />
-              Reply
+            <MenuItem>
+              <ListItemIcon>
+                <ReplyRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px'}}>
+                  Reply
+                </Typography>
+              </ListItemText>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ShortcutRoundedIcon />
-              Forward
+            <MenuItem>
+              <ListItemIcon>
+                <ContentCopyRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px'}}>
+                  Copy
+                </Typography>
+              </ListItemText>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <DeleteRoundedIcon />
-              Delete
+            <MenuItem>
+              <ListItemIcon>
+                <ShortcutRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px'}}>
+                  Forward
+                </Typography>
+              </ListItemText>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ContentCopyRoundedIcon />
-              Copy
+            <MenuItem>
+              <ListItemIcon>
+                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px'}}>
+                  Delete
+                </Typography>
+              </ListItemText>
             </MenuItem>
           </Menu>
         </div>
