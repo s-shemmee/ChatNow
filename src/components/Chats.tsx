@@ -4,11 +4,18 @@ import { doc, getDoc, onSnapshot, Timestamp } from "firebase/firestore";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { db } from "../firebase";
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import MarkChatUnreadRoundedIcon from '@mui/icons-material/MarkChatUnreadRounded';
-import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import MarkChatUnreadRoundedIcon from "@mui/icons-material/MarkChatUnreadRounded";
+import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import {
+  IconButton,
+  Tooltip,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { formatDistanceToNow } from "date-fns";
@@ -24,8 +31,11 @@ interface ChatData {
   messages: Array<{
     id: string;
     senderId: string;
-    text: string;
     date: Timestamp;
+    message?: {
+      text?: string;
+      img?: string;
+    };
   }>;
 }
 
@@ -37,18 +47,19 @@ interface ChatsProps {
 const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const currentUser = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
+  const [lastMessages, setLastMessages] = useState<Record<string, { message?: { text?: string; img?: string }; date: string }>>({});
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
-  const [lastMessages, setLastMessages] = useState<Record<string, { message: string, date: string }>>({});
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   useEffect(() => {
-    const unsubscribe = currentUser && onSnapshot(
-      doc(db, "userChats", currentUser.uid),
-      async (snapshot) => {
+    const unsubscribe =
+      currentUser &&
+      onSnapshot(doc(db, "userChats", currentUser.uid), async (snapshot) => {
         const data = snapshot.data();
         setChatData(data || {});
 
@@ -57,7 +68,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
           const userMetadata = userDoc.data()?.metadata || {};
 
           dispatch({
-            type: 'CHANGE_USER',
+            type: "CHANGE_USER",
             payload: {
               ...data.userInfo,
               date: data.date,
@@ -68,8 +79,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
             },
           });
         }
-      }
-    );
+      });
 
     return () => {
       unsubscribe && unsubscribe();
@@ -83,8 +93,20 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         const lastMessage = messages[messages.length - 1];
 
         if (lastMessage) {
-          const formattedDistance = formatDistanceToNow(lastMessage.date.toDate(), { locale: enUS });
-          setLastMessages((prev) => ({ ...prev, [chatId]: { message: lastMessage.message?.text || 'No messages yet', date: formattedDistance } }));
+          const formattedDistance = formatDistanceToNow(
+            lastMessage.date.toDate(),
+            { locale: enUS }
+          );
+          setLastMessages((prev) => ({
+            ...prev,
+            [chatId]: {
+              message: {
+                text: lastMessage.message?.text || "",
+                img: lastMessage.message?.img || "",
+              },
+              date: formattedDistance,
+            },
+          }));
         }
       });
     });
@@ -96,35 +118,53 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
     const chat = chatData[chatId];
     if (chat?.userInfo) {
       onSelectChat(chatId);
-      dispatch({ type: 'CHANGE_USER', payload: { ...chat.userInfo } });
+      dispatch({ type: "CHANGE_USER", payload: { ...chat.userInfo } });
     }
   };
 
   const renderChatsList = () => {
     const sortedChats = Object.keys(chatData).sort((a, b) => {
-      const dateA = lastMessages[a]?.date || '';
-      const dateB = lastMessages[b]?.date || '';
+      const dateA = lastMessages[a]?.date || "";
+      const dateB = lastMessages[b]?.date || "";
       return new Date(dateB).getTime() - new Date(dateA).getTime();
     });
-  
+
     return sortedChats.map((chatId) => {
       const { userInfo } = chatData[chatId];
-  
+
       if (!userInfo) {
         return null;
       }
-  
+
       const lastMessage = lastMessages[chatId];
-      const truncatedMessage = lastMessage?.message.split(' ').slice(0, 5).join(' ') || 'No messages yet';
-  
+
+      // Determine the value of truncatedMessage based on message type
+      const truncatedMessage = lastMessage?.message?.text
+        ? lastMessage.message.text.length > 20
+          ? `${lastMessage.message.text.slice(0, 27)}...`
+          : lastMessage.message.text
+        : lastMessage?.message?.img
+        ? "Attachment"
+        : "No messages yet";
+
       return (
-        <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
+        <div
+          key={chatId}
+          className={`chatCard ${selectedChatId === chatId ? "selected" : ""}`}
+          onClick={() => openChat(chatId)}
+        >
           <div className="chatUserInfo">
-            <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
+            <img
+              src={userInfo.photoURL}
+              alt={userInfo.displayName}
+              className="chatUserImg"
+            />
             <div className="chatContent">
               <div className="chatUser">
                 <h4 className="chatUserName">{userInfo.displayName}</h4>
-                <span className="chatUserProfession">{userInfo.profession}</span>
+                <span className="chatUserProfession">
+                  {userInfo.profession}
+                </span>
               </div>
               <p className="chatLastMessage">{truncatedMessage}</p>
             </div>
@@ -145,30 +185,45 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
           >
             <MenuItem>
               <ListItemIcon>
-                <MarkChatUnreadRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
+                <MarkChatUnreadRoundedIcon
+                  sx={{ color: "#9474f4", fontSize: "20px" }}
+                />
               </ListItemIcon>
               <ListItemText>
-                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                >
                   Mark as unread
                 </Typography>
               </ListItemText>
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
+                <ArchiveRoundedIcon
+                  sx={{ color: "#9474f4", fontSize: "20px" }}
+                />
               </ListItemIcon>
               <ListItemText>
-                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                >
                   Archive Chat
                 </Typography>
               </ListItemText>
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
+                <DeleteRoundedIcon
+                  sx={{ color: "#9474f4", fontSize: "20px" }}
+                />
               </ListItemIcon>
               <ListItemText>
-                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                >
                   Delete Chat
                 </Typography>
               </ListItemText>
