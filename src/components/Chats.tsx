@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceStrict } from "date-fns";
 import { enUS } from "date-fns/locale";
 
 interface ChatData {
@@ -93,8 +93,9 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         const lastMessage = messages[messages.length - 1];
 
         if (lastMessage) {
-          const formattedDistance = formatDistanceToNow(
+          const formattedDistance = formatDistanceStrict(
             lastMessage.date.toDate(),
+            new Date(),
             { locale: enUS }
           );
           setLastMessages((prev) => ({
@@ -141,7 +142,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
       // Determine the value of truncatedMessage based on message type
       const truncatedMessage = lastMessage?.message?.text
         ? lastMessage.message.text.length > 20
-          ? `${lastMessage.message.text.slice(0, 20)}...`
+          ? `${lastMessage.message.text.slice(0, 25)}...`
           : lastMessage.message.text
         : lastMessage?.message?.img
         ? "Attachment"
