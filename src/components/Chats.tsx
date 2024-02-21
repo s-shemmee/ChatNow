@@ -11,7 +11,7 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { formatDistanceToNowStrict } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 
 interface ChatData {
@@ -83,7 +83,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         const lastMessage = messages[messages.length - 1];
 
         if (lastMessage) {
-          const formattedDistance = formatDistanceToNowStrict(lastMessage.date.toDate(), { locale: enUS });
+          const formattedDistance = formatDistanceToNow(lastMessage.date.toDate(), { locale: enUS });
           setLastMessages((prev) => ({ ...prev, [chatId]: { message: lastMessage.message?.text || 'No messages yet', date: formattedDistance } }));
         }
       });
@@ -103,13 +103,14 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const renderChatsList = () => {
     return Object.keys(chatData).map((chatId) => {
       const { userInfo } = chatData[chatId];
-
+  
       if (!userInfo) {
         return null;
       }
-
+  
       const lastMessage = lastMessages[chatId];
-
+      const truncatedMessage = lastMessage?.message.split(' ').slice(0, 6).join(' ') || 'No messages yet'; // Displaying the first 6 words
+  
       return (
         <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
           <div className="chatUserInfo">
@@ -119,7 +120,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
                 <h4 className="chatUserName">{userInfo.displayName}</h4>
                 <span className="chatUserProfession">{userInfo.profession}</span>
               </div>
-              <p className="chatLastMessage">{lastMessage?.message || "No messages yet"}</p>
+              <p className="chatLastMessage">{truncatedMessage}</p>
             </div>
           </div>
           <div className="chatUserDetails">
