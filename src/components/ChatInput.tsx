@@ -8,7 +8,8 @@ import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import MicRoundedIcon from '@mui/icons-material/MicRounded';
 import MoodRoundedIcon from '@mui/icons-material/MoodRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import FormatColorTextRoundedIcon from '@mui/icons-material/FormatColorTextRounded';
+import TextFieldsRoundedIcon from '@mui/icons-material/TextFieldsRounded';
+import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded';
 import { IconButton, InputBase, Tooltip } from "@mui/material";
 import { ChatContext } from "../context/ChatContext";
 import AuthContext from "../context/AuthContext";
@@ -140,7 +141,7 @@ const ChatInput: React.FC = () => {
         <div className="chatOptions">
           <IconButton className="chatIcon">
             <Tooltip title="Text Format" placement="bottom" arrow enterDelay={500} leaveDelay={200} aria-label="text format">
-              <FormatColorTextRoundedIcon />
+              <TextFieldsRoundedIcon />
             </Tooltip>
           </IconButton>           
           <IconButton className="chatIcon" onClick={handleFileIconClick}>
@@ -166,6 +167,11 @@ const ChatInput: React.FC = () => {
           <IconButton className="chatIcon">
             <Tooltip title="Emoji" placement="bottom" arrow enterDelay={500} leaveDelay={200} aria-label="emoji">
               <MoodRoundedIcon />
+            </Tooltip>
+          </IconButton>
+          <IconButton className="chatIcon">
+            <Tooltip title="Insert Link" placement="bottom" arrow enterDelay={500} leaveDelay={200} aria-label="insert link">
+              <InsertLinkRoundedIcon />
             </Tooltip>
           </IconButton>
         </div>
