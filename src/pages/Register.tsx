@@ -91,8 +91,6 @@ const Register: React.FC = () => {
                 await setDoc(userChatsCollectionRef, {
                   chatIdList: chatIdList,
                 });
-
-                console.log("User profile updated and added to Firestore!", user);
               }
             );
           }
