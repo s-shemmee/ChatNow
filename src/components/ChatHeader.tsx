@@ -9,9 +9,15 @@ import InfoIcon from "@mui/icons-material/Info";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded';
-import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
-import { IconButton, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
+import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
+import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
+import {
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { Block } from "@mui/icons-material";
 
@@ -41,18 +47,19 @@ const ChatHeader: React.FC = () => {
 
   // the full date of chat creation between two users from userChats
   const chatCreationTime = state.user.date?.toDate().toLocaleString();
-  
+
+  //TODO: idk Why does the 'Last Seen' time always show the duration the user has been online, even thou the code calculates the difference between the last sign-in and the current time :c
   // Fetch the lastSignInTime from Firestore
   const fetchLastSignInTime = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, "users", state.user.uid));
       const lastSignInTime = userDoc.data()?.userMetadata.lastSignInTime;
       const onlineStatus = userDoc.data()?.online ? "Online" : "Offline";
-  
+
       if (onlineStatus === "Online") {
         return onlineStatus;
       }
-  
+
       if (lastSignInTime) {
         const distance = formatDistanceToNow(new Date(lastSignInTime), {
           addSuffix: true,
@@ -66,7 +73,7 @@ const ChatHeader: React.FC = () => {
       return "Unavailable";
     }
   }, [state.user.uid]);
-    
+
   // Use a state to manage the lastSeenTime and fetch it asynchronously
   const [lastSeenTime, setLastSeenTime] = useState("Loading...");
 
@@ -93,69 +100,100 @@ const ChatHeader: React.FC = () => {
           <p className="chatStatus">{lastSeenTime}</p>
         </div>
       </div>
-        <div className="chatActions">
-          <div
-            className="chatAction"
-            onMouseEnter={() => setIsFlagFilled(true)}
-            onMouseLeave={() => setIsFlagFilled(false)}
-            onClick={handleFlagClick}
-          >
-            {isFlagFilled ? <IconButton><Tooltip title="Report"><FlagIcon /></Tooltip></IconButton> : <IconButton><FlagOutlinedIcon /></IconButton>}
-          </div>
-          <div
-            className="chatAction"
-            onMouseEnter={() => setIsInfoFilled(true)}
-            onMouseLeave={() => setIsInfoFilled(false)}
-            onClick={handleInfoClick}
-          >
-            {isInfoFilled ? <IconButton><Tooltip title={`Chat Created at ${chatCreationTime}`} arrow><InfoIcon /></Tooltip></IconButton> : <IconButton><InfoOutlinedIcon /></IconButton>}
-          </div>
-          <div className="chatAction" >
-            <IconButton onClick={handleClick}>
-              <Tooltip title="More">
-                <MoreVertOutlinedIcon />
+      <div className="chatActions">
+        <div
+          className="chatAction"
+          onMouseEnter={() => setIsFlagFilled(true)}
+          onMouseLeave={() => setIsFlagFilled(false)}
+          onClick={handleFlagClick}
+        >
+          {isFlagFilled ? (
+            <IconButton>
+              <Tooltip title="Report">
+                <FlagIcon />
               </Tooltip>
             </IconButton>
-          </div>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem>
-              <ListItemIcon>
-                <NotificationsOffRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
-              </ListItemIcon>
-              <ListItemText>
-              <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Notifications
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Archive
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <Block sx={{ color: "#9474f4", fontSize:"20px" }}/>
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
-                  Block
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-          </Menu>
+          ) : (
+            <IconButton>
+              <FlagOutlinedIcon />
+            </IconButton>
+          )}
         </div>
+        <div
+          className="chatAction"
+          onMouseEnter={() => setIsInfoFilled(true)}
+          onMouseLeave={() => setIsInfoFilled(false)}
+          onClick={handleInfoClick}
+        >
+          {isInfoFilled ? (
+            <IconButton>
+              <Tooltip title={`Chat Created at ${chatCreationTime}`} arrow>
+                <InfoIcon />
+              </Tooltip>
+            </IconButton>
+          ) : (
+            <IconButton>
+              <InfoOutlinedIcon />
+            </IconButton>
+          )}
+        </div>
+        <div className="chatAction">
+          <IconButton onClick={handleClick}>
+            <Tooltip title="More">
+              <MoreVertOutlinedIcon />
+            </Tooltip>
+          </IconButton>
+        </div>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem>
+            <ListItemIcon>
+              <NotificationsOffRoundedIcon
+                sx={{ color: "#9474f4", fontSize: "20px" }}
+              />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography
+                variant="body2"
+                sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+              >
+                Notifications
+              </Typography>
+            </ListItemText>
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography
+                variant="body2"
+                sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+              >
+                Archive
+              </Typography>
+            </ListItemText>
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <Block sx={{ color: "#9474f4", fontSize: "20px" }} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography
+                variant="body2"
+                sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+              >
+                Block
+              </Typography>
+            </ListItemText>
+          </MenuItem>
+        </Menu>
       </div>
+    </div>
   );
 };
 
