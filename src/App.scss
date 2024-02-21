@@ -355,7 +355,7 @@ body {
         border-radius: 20px;
         padding: 10px 20px;
         margin-bottom: 10px;
-        box-shadow: 0px 8px 10px rgba(9, 9, 9, 0.1);
+        box-shadow: 0px 5px 10px rgba(9, 9, 9, 0.1);
 
         input[type="text"] {
           width: 100%;
@@ -558,10 +558,11 @@ body {
           align-items: center;
           justify-content: center;
           flex-direction: column;
+          text-align: center;
           gap: 10px;
 
           .timestamp {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 500;
             color: $grey;
           }
@@ -608,8 +609,7 @@ body {
       background-color: $white;
       border-radius: 20px;
       padding: 10px 20px;
-      margin-bottom: 20px;
-
+      
       .chatUser {
         display: flex;
         align-items: center;
@@ -816,6 +816,7 @@ body {
       background-color: $white;
       border-radius: 20px;
       padding: 20px;
+      box-shadow: 0px 4px 10px rgba(9, 9, 9, 0.1);
 
       form {
         width: 100%;
