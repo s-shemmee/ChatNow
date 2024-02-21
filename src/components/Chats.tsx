@@ -11,7 +11,8 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
+import { enUS } from "date-fns/locale";
 
 interface ChatData {
   userInfo: {
@@ -82,8 +83,8 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         const lastMessage = messages[messages.length - 1];
 
         if (lastMessage) {
-          const formattedTime = formatDistanceToNow(lastMessage.date.toDate(), { addSuffix: true });
-          setLastMessages((prev) => ({ ...prev, [chatId]: { message: lastMessage.message?.text || 'No messages yet', date: formattedTime } }));
+          const formattedDistance = formatDistanceToNowStrict(lastMessage.date.toDate(), { locale: enUS });
+          setLastMessages((prev) => ({ ...prev, [chatId]: { message: lastMessage.message?.text || 'No messages yet', date: formattedDistance } }));
         }
       });
     });
