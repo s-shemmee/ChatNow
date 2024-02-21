@@ -42,21 +42,14 @@ const Message: React.FC<{ message: MessageData }> = ({ message }) => {
     setAnchorEl(null);
   };
 
-  const formattedTime = message.date
-    .toDate()
-    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  const formattedTime = message.date.toDate().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
   return (
-    <div
-      ref={ref}
-      className={`message ${
-        message.senderId === currentUser?.uid ? "Sender" : "Receiver"
-      }`}
-    >
+    <div ref={ref} className={`message ${ message.senderId === currentUser?.uid ? "Sender" : "Receiver" }`}>
       {message.senderId === currentUser?.uid ? (
         <div className="SenderInfo">
           <Tooltip title="You">
@@ -96,7 +89,7 @@ const Message: React.FC<{ message: MessageData }> = ({ message }) => {
         <div className="messageActions">
           <IconButton onClick={handleClick}>
             <Tooltip title="More options">
-              <MoreHorizRoundedIcon />
+              <MoreHorizRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
             </Tooltip>
           </IconButton>
           <Menu
