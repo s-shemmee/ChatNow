@@ -101,7 +101,13 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   };
 
   const renderChatsList = () => {
-    return Object.keys(chatData).map((chatId) => {
+    const sortedChats = Object.keys(chatData).sort((a, b) => {
+      const dateA = lastMessages[a]?.date || '';
+      const dateB = lastMessages[b]?.date || '';
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    });
+  
+    return sortedChats.map((chatId) => {
       const { userInfo } = chatData[chatId];
   
       if (!userInfo) {
@@ -109,7 +115,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
       }
   
       const lastMessage = lastMessages[chatId];
-      const truncatedMessage = lastMessage?.message.split(' ').slice(0, 6).join(' ') || 'No messages yet'; // Displaying the first 6 words
+      const truncatedMessage = lastMessage?.message.split(' ').slice(0, 5).join(' ') || 'No messages yet';
   
       return (
         <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
