@@ -11,6 +11,7 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { IconButton, Tooltip, Divider, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { formatDistanceToNow } from "date-fns";
 
 interface ChatData {
   userInfo: {
@@ -19,11 +20,12 @@ interface ChatData {
     photoURL: string;
     profession: string;
   };
-  date: Timestamp;
-  lastMessage: {
+  messages: Array<{
+    id: string;
+    senderId: string;
     text: string;
-    img: string;
-  }
+    date: Timestamp;
+  }>;
 }
 
 interface ChatsProps {
@@ -35,16 +37,12 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const currentUser = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [lastMessages, setLastMessages] = useState<Record<string, { message: string, date: string }>>({});
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
   useEffect(() => {
     const unsubscribe = currentUser && onSnapshot(
@@ -77,27 +75,42 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
     };
   }, [currentUser, dispatch]);
 
+  useEffect(() => {
+    const unsubscribeMessages = Object.keys(chatData).map((chatId) => {
+      return onSnapshot(doc(db, "chats", chatId), (snapshot) => {
+        const messages = snapshot.data()?.messages || [];
+        const lastMessage = messages[messages.length - 1];
+
+        if (lastMessage) {
+          const formattedTime = formatDistanceToNow(lastMessage.date.toDate(), { addSuffix: true });
+          setLastMessages((prev) => ({ ...prev, [chatId]: { message: lastMessage.message?.text || 'No messages yet', date: formattedTime } }));
+        }
+      });
+    });
+
+    return () => unsubscribeMessages.forEach((unsubscribe) => unsubscribe());
+  }, [chatData]);
+
   const openChat = (chatId: string) => {
     const chat = chatData[chatId];
-    if (chat && chat.userInfo) {
+    if (chat?.userInfo) {
       onSelectChat(chatId);
-      dispatch({ type: 'CHANGE_USER', payload: { ...chat.userInfo, date: chat.date } });
+      dispatch({ type: 'CHANGE_USER', payload: { ...chat.userInfo } });
     }
   };
 
   const renderChatsList = () => {
     return Object.keys(chatData).map((chatId) => {
-      const { userInfo, lastMessage, date } = chatData[chatId];
+      const { userInfo } = chatData[chatId];
 
       if (!userInfo) {
         return null;
       }
 
-      const formattedTime = date ? date.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+      const lastMessage = lastMessages[chatId];
 
       return (
         <div key={chatId} className={`chatCard ${selectedChatId === chatId ? 'selected' : ''}`} onClick={() => openChat(chatId)}>
-          {/* individual chat item */}
           <div className="chatUserInfo">
             <img src={userInfo.photoURL} alt={userInfo.displayName} className="chatUserImg" />
             <div className="chatContent">
@@ -105,7 +118,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
                 <h4 className="chatUserName">{userInfo.displayName}</h4>
                 <span className="chatUserProfession">{userInfo.profession}</span>
               </div>
-              <p className="chatLastMessage">{lastMessage?.text ? lastMessage.text :  'No  messages yet'}</p>
+              <p className="chatLastMessage">{lastMessage?.message || "No messages yet"}</p>
             </div>
           </div>
           <div className="chatUserDetails">
@@ -114,7 +127,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
                 <MoreHorizRoundedIcon />
               </Tooltip>
             </IconButton>
-            {formattedTime && <p className="timestamp">{formattedTime}</p>}
+            {lastMessage && <p className="timestamp">{lastMessage.date}</p>}
           </div>
           <Menu
             id="basic-menu"
@@ -124,17 +137,17 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
           >
             <MenuItem>
               <ListItemIcon>
-                <MarkChatUnreadRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+                <MarkChatUnreadRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
               </ListItemIcon>
               <ListItemText>
-              <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
+                <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
                   Mark as unread
                 </Typography>
               </ListItemText>
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+                <ArchiveRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
               </ListItemIcon>
               <ListItemText>
                 <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
@@ -144,7 +157,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize:"20px" }}/>
+                <DeleteRoundedIcon sx={{ color: "#9474f4", fontSize: "20px" }} />
               </ListItemIcon>
               <ListItemText>
                 <Typography variant="body2" sx={{ color: "#5e5e5e", fontSize: '14px', fontWeight: '600' }}>
