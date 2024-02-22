@@ -124,6 +124,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   };
 
   const renderChatsList = () => {
+    //TODO: sort chats by the last message or create a filter for this feature
     const sortedChats = Object.keys(chatData).sort((a, b) => {
       const dateA = lastMessages[a]?.date || "";
       const dateB = lastMessages[b]?.date || "";
