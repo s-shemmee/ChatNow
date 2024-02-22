@@ -137,8 +137,8 @@ const Searchbar: React.FC = () => {
             </div>
             <div className="searchResultbuttons">
               {!currentUser || currentUser.uid !== user.uid && (
-                <IconButton>
-                  <Tooltip title="Say Hey!" onClick={handleSelect}>
+                <IconButton onClick={handleSelect}>
+                  <Tooltip title="Say Hey!" >
                     <WavingHandRoundedIcon className="searchResultbutton" />
                   </Tooltip>
                 </IconButton>
