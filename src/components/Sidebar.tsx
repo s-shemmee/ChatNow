@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import logo from "../assets/logo.png";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
   const handleLogout = async () => {
     try {
       setLoading(true);
+
+      // Set the online status to false in Firestore
+      const usersCollectionRef = doc(db, "users", currentUser?.uid || "");
+      await updateDoc(usersCollectionRef, {
+        online: false,
+      });
+
+      // Sign out the user
       await signOut(auth);
+
       // Redirect to the login page after successful logout
       navigate("/login");
     } catch (error) {
@@ -72,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
 
       <div className="sidebarUser">
         {currentUser && currentUser.photoURL && (
-          <Tooltip title={currentUser.displayName}>
+          <Tooltip title={currentUser.displayName || "User"}>
             <img
               src={currentUser.photoURL}
               alt="avatarURL"
