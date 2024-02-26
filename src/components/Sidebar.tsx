@@ -6,7 +6,7 @@ import { signOut } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
+import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { IconButton, Tooltip } from "@mui/material";
@@ -18,12 +18,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
   const currentUser = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     try {
+      // Set loading to true before the asynchronous operations
+      // This will trigger the loading screen
       setLoading(true);
 
       // Set the online status to false in Firestore
@@ -38,11 +39,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
       // Redirect to the login page after successful logout
       navigate("/login");
     } catch (error) {
-      console.error(
-        "Logout failed:",
-        (error as Error).message || "An error occurred"
-      );
+      console.error("Logout failed:", (error as Error).message || "An error occurred");
     } finally {
+      // Set loading back to false after the asynchronous operations
+      // This will hide the loading screen
       setLoading(false);
     }
   };
@@ -52,6 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
   };
 
   if (loading) {
+    // Render the LoadingScreen component if loading is true
     return <LoadingScreen />;
   }
 
@@ -83,11 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onHomeClick }) => {
       <div className="sidebarUser">
         {currentUser && currentUser.photoURL && (
           <Tooltip title={currentUser.displayName || "User"}>
-            <img
-              src={currentUser.photoURL}
-              alt="avatarURL"
-              className="userImg"
-            />
+            <img src={currentUser.photoURL} alt="avatarURL" className="userImg" />
           </Tooltip>
         )}
 
