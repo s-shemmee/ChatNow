@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db } from "../firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
@@ -27,7 +27,6 @@ const Login: React.FC = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,19 +61,26 @@ const Login: React.FC = () => {
       // Handle successful login 
       console.log("User logged in successfully:", user);
 
-      // fetch the latest user metadata from Firebase Auth
+      // Fetch the latest user metadata from Firebase Auth
       const updatedUser = auth.currentUser;
-      const userMetadata = updatedUser?.metadata;
 
-      // Update user metadata in Firebase "users" collection
-      if (updatedUser && userMetadata) {
+      if (updatedUser) {
+        // Check if the user document exists before updating
         const usersCollectionRef = doc(db, "users", updatedUser.uid);
-        await updateDoc(usersCollectionRef, {
-          userMetadata: {
-            creationTime: userMetadata.creationTime,
-            lastSignInTime: userMetadata.lastSignInTime,
-          },
-        });
+        const userDoc = await getDoc(usersCollectionRef);
+
+        if (userDoc.exists()) {
+          // Document exists, update it
+          await updateDoc(usersCollectionRef, {
+            userMetadata: {
+              creationTime: updatedUser.metadata.creationTime,
+              lastSignInTime: updatedUser.metadata.lastSignInTime,
+            },
+          });
+        } else {
+          // Handle the case where the document doesn't exist
+          console.error("User document does not exist:", updatedUser.uid);
+        }
       }
 
       // Redirect to the home page
@@ -151,8 +157,6 @@ const Login: React.FC = () => {
         <div className="remember_forget">
           <div className="remember">
             <Checkbox
-              {...label}
-              sx={{ "&.Mui-checked": { color: "#9474f4" } }}
               checked={formData.rememberMe}
               onChange={(e) =>
                 setFormData({ ...formData, rememberMe: e.target.checked })
