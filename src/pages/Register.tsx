@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db, storage } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile, User, UserCredential, UserMetadata } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, UserCredential, User, UserMetadata } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -39,17 +39,13 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
       if (displayName && email && password && avatar) {
-        const userCredential: UserCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
 
         const user: User = userCredential.user;
         const userMetadata: UserMetadata = user.metadata;
 
         // Destination to upload avatars
-        const storageRef = ref(storage, `avatars/${displayName}_avatar`);
+        const storageRef = ref(storage, `avatars/${displayName}_${new Date().getTime()}_avatar`);
         // Upload avatar to the storage
         const uploadTask = uploadBytesResumable(storageRef, avatar);
 
@@ -57,55 +53,51 @@ const Register: React.FC = () => {
           "state_changed",
           () => {},
           (error) => {
-            console.error(
-              "Avatar upload failed:",
-              (error as Error)?.message || "An error occurred"
-            );
+            console.error("Avatar upload failed:", (error as Error)?.message || "An error occurred");
           },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                // Update user profile
-                await updateProfile(user, {
-                  displayName: displayName,
-                  photoURL: downloadURL,
-                });
+          async () => {
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-                // Add user information to Firestore "users" collection
-                const usersCollectionRef = doc(db, "users", user.uid);
-                await setDoc(usersCollectionRef, {
-                  uid: user.uid,
-                  displayName: displayName,
-                  profession: profession,
-                  email: email,
-                  avatarURL: downloadURL,
-                  userMetadata: {
-                    creationTime: userMetadata.creationTime,
-                    lastSignInTime: userMetadata.lastSignInTime,
-                  },
-                });
+              // Update user profile
+              await updateProfile(user, {
+                displayName: displayName,
+                photoURL: downloadURL,
+              });
 
-                // Add user chats to Firestore "userChats" collection
-                const chatIdList: string[] = []; // Specify the type as an array of strings
-                const userChatsCollectionRef = doc(db, "userChats", user.uid);
-                await setDoc(userChatsCollectionRef, {
-                  chatIdList: chatIdList,
-                });
-              }
-            );
+              // Add user information to Firestore "users" collection
+              const usersCollectionRef = doc(db, "users", user.uid);
+              await setDoc(usersCollectionRef, {
+                uid: user.uid,
+                displayName: displayName,
+                profession: profession,
+                email: email,
+                avatarURL: downloadURL,
+                userMetadata: {
+                  creationTime: userMetadata.creationTime,
+                  lastSignInTime: userMetadata.lastSignInTime,
+                },
+              });
+
+              // Add user chats to Firestore "userChats" collection
+              const chatIdList: string[] = [];
+              const userChatsCollectionRef = doc(db, "userChats", user.uid);
+              await setDoc(userChatsCollectionRef, {
+                chatIdList: chatIdList,
+              });
+
+              // Redirect to the home page after successful operations
+              navigate("/");
+            } catch (error) {
+              console.error("Error updating user information:", (error as Error)?.message || "An error occurred");
+            } finally {
+              setLoading(false);
+            }
           }
         );
-
-        // Redirect to the home page after successful operations
-        navigate("/");
-        console.log("Redirecting to the home page");
       }
     } catch (error) {
-      console.error(
-        "Registration failed:",
-        (error as Error)?.message || "An error occurred"
-      );
-    } finally {
+      console.error("Registration failed:", (error as Error)?.message || "An error occurred");
       setLoading(false);
     }
   };
