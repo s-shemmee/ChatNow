@@ -12,10 +12,11 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
-import { IconButton, Tooltip } from '@mui/material';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import WavingHandRoundedIcon from '@mui/icons-material/WavingHandRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { IconButton, Tooltip } from "@mui/material";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import WavingHandRoundedIcon from "@mui/icons-material/WavingHandRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import LoadingScreen from "./LoadingScreen"; 
 
 interface UserData {
   uid: string;
@@ -28,29 +29,33 @@ const Searchbar: React.FC = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState<UserData | null>(null);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const currentUser = React.useContext(AuthContext);
 
   const handleSearch = async () => {
     try {
+      setLoading(true);
       const q = query(collection(db, "users"), where("displayName", "==", username));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
         setError(true);
-        return;
+        setUser(null);
       } else {
         setError(false);
+        setUser(querySnapshot.docs[0].data() as UserData);
       }
-      
-      setUser(querySnapshot.docs[0].data() as UserData);
     } catch (err) {
       console.error("Error searching for user:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
-  
+
   const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSearch();
     }
   };
@@ -61,21 +66,19 @@ const Searchbar: React.FC = () => {
       return;
     }
 
-    const combinedId = currentUser.uid > user.uid
-      ? `${currentUser.uid}${user.uid}`
-      : `${user.uid}${currentUser.uid}`;
-  
+    const combinedId = currentUser.uid > user.uid ? `${currentUser.uid}${user.uid}` : `${user.uid}${currentUser.uid}`;
+
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
-  
+
       if (!res.exists()) {
         // Get user metadata directly from the 'users' collection
         const userDoc = await getDoc(doc(db, "users", user.uid));
         const userMetadata = userDoc.data()?.userMetadata || {};
-  
+
         // Create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
-  
+
         // Create user chats
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [`${combinedId}.userInfo`]: {
@@ -90,7 +93,7 @@ const Searchbar: React.FC = () => {
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });
-  
+
         await updateDoc(doc(db, "userChats", user.uid), {
           [`${combinedId}.userInfo`]: {
             uid: currentUser.uid,
@@ -106,12 +109,12 @@ const Searchbar: React.FC = () => {
       }
     } catch (err) {
       console.error("Error handling selection:", err);
+    } finally {
+      setUser(null);
+      setUsername("");
     }
-  
-    setUser(null);
-    setUsername("");
   };
-  
+
   return (
     <div className="searchbar">
       <div className="searchForm">
@@ -123,9 +126,10 @@ const Searchbar: React.FC = () => {
           onKeyDown={handleKey}
         />
         <IconButton onClick={handleSearch}>
-          <SearchRoundedIcon className="searchIcon"/>
+          <SearchRoundedIcon className="searchIcon" />
         </IconButton>
       </div>
+      {loading && <LoadingScreen />}
       {error && <p>User not found</p>}
       {user && (
         <div className="searchResult">
@@ -138,7 +142,7 @@ const Searchbar: React.FC = () => {
             <div className="searchResultbuttons">
               {!currentUser || currentUser.uid !== user.uid && (
                 <IconButton onClick={handleSelect}>
-                  <Tooltip title="Say Hey!" >
+                  <Tooltip title="Say Hi!">
                     <WavingHandRoundedIcon className="searchResultbutton" />
                   </Tooltip>
                 </IconButton>
