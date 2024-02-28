@@ -50,36 +50,41 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const [lastMessages, setLastMessages] = useState<Record<string, { message?: { text?: string; img?: string }; date: string }>>({});
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
-    setAnchorEl(event.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   useEffect(() => {
-    const unsubscribe =
-      currentUser &&
-      onSnapshot(doc(db, "userChats", currentUser.uid), async (snapshot) => {
-        const data = snapshot.data();
-        setChatData(data || {});
+    const fetchData = async () => {
+      try {
+        if (currentUser) {
+          const snapshot = await getDoc(doc(db, "userChats", currentUser.uid));
+          const data = snapshot.data();
+          setChatData(data || {});
 
-        if (data && data.userInfo) {
-          const userDoc = await getDoc(doc(db, "users", data.userInfo.uid));
-          const userMetadata = userDoc.data()?.metadata || {};
+          if (data && data.userInfo) {
+            const userDoc = await getDoc(doc(db, "users", data.userInfo.uid));
+            const userMetadata = userDoc.data()?.metadata || {};
 
-          dispatch({
-            type: "CHANGE_USER",
-            payload: {
-              ...data.userInfo,
-              date: data.date,
-              userMetadata: {
-                creationTime: userMetadata.creationTime || null,
-                lastSignInTime: userMetadata.lastSignInTime || null,
+            dispatch({
+              type: "CHANGE_USER",
+              payload: {
+                ...data.userInfo,
+                date: data.date,
+                userMetadata: {
+                  creationTime: userMetadata.creationTime || null,
+                  lastSignInTime: userMetadata.lastSignInTime || null,
+                },
               },
-            },
-          });
+            });
+          }
         }
-      });
+      } catch (error) {
+        console.error("Error fetching user chats:", error);
+      }
+    };
+
+    const unsubscribe = currentUser && onSnapshot(doc(db, "userChats", currentUser.uid), fetchData);
 
     return () => {
       unsubscribe && unsubscribe();
@@ -149,92 +154,88 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
         ? "Attachment"
         : "No messages yet";
 
-      return (
-        <div
-          key={chatId}
-          className={`chatCard ${selectedChatId === chatId ? "selected" : ""}`}
-          onClick={() => openChat(chatId)}
-        >
-          <div className="chatUserInfo">
-            <img
-              src={userInfo.photoURL}
-              alt={userInfo.displayName}
-              className="chatUserImg"
-            />
-            <div className="chatContent">
-              <div className="chatUser">
-                <h4 className="chatUserName">{userInfo.displayName}</h4>
-                <span className="chatUserProfession">
-                  {userInfo.profession}
-                </span>
+        return (
+          <div key={chatId} className={`chatCard ${selectedChatId === chatId ? "selected" : ""}`} onClick={() => openChat(chatId)}>
+            <div className="chatUserInfo">
+              <img
+                src={userInfo.photoURL}
+                alt={userInfo.displayName}
+                className="chatUserImg"
+              />
+              <div className="chatContent">
+                <div className="chatUser">
+                  <h4 className="chatUserName">{userInfo.displayName}</h4>
+                  <span className="chatUserProfession">
+                    {userInfo.profession}
+                  </span>
+                </div>
+                <p className="chatLastMessage">{truncatedMessage}</p>
               </div>
-              <p className="chatLastMessage">{truncatedMessage}</p>
             </div>
+            <div className="chatUserDetails">
+              <IconButton onClick={handleClick}>
+                <Tooltip title="More" className="button">
+                  <MoreHorizRoundedIcon />
+                </Tooltip>
+              </IconButton>
+              {lastMessage && <p className="timestamp">{lastMessage.date}</p>}
+            </div>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <MarkChatUnreadRoundedIcon
+                    sx={{ color: "#9474f4", fontSize: "20px" }}
+                  />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                  >
+                    Mark as unread
+                  </Typography>
+                </ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <ArchiveRoundedIcon
+                    sx={{ color: "#9474f4", fontSize: "20px" }}
+                  />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                  >
+                    Archive Chat
+                  </Typography>
+                </ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <DeleteRoundedIcon
+                    sx={{ color: "#9474f4", fontSize: "20px" }}
+                  />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
+                  >
+                    Delete Chat
+                  </Typography>
+                </ListItemText>
+              </MenuItem>
+            </Menu>
           </div>
-          <div className="chatUserDetails">
-            <IconButton onClick={handleClick}>
-              <Tooltip title="More" className="button">
-                <MoreHorizRoundedIcon />
-              </Tooltip>
-            </IconButton>
-            {lastMessage && <p className="timestamp">{lastMessage.date}</p>}
-          </div>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem>
-              <ListItemIcon>
-                <MarkChatUnreadRoundedIcon
-                  sx={{ color: "#9474f4", fontSize: "20px" }}
-                />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
-                >
-                  Mark as unread
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ArchiveRoundedIcon
-                  sx={{ color: "#9474f4", fontSize: "20px" }}
-                />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
-                >
-                  Archive Chat
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <DeleteRoundedIcon
-                  sx={{ color: "#9474f4", fontSize: "20px" }}
-                />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#5e5e5e", fontSize: "14px", fontWeight: "600" }}
-                >
-                  Delete Chat
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-          </Menu>
-        </div>
-      );
-    });
-  };
+        );
+      });
+    };
 
   return (
     <div className="chatsContainer">
