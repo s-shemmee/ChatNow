@@ -16,7 +16,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import WavingHandRoundedIcon from "@mui/icons-material/WavingHandRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import LoadingScreen from "./LoadingScreen"; 
+import LoadingScreen from "./LoadingScreen";
 
 interface UserData {
   uid: string;
@@ -72,10 +72,6 @@ const Searchbar: React.FC = () => {
       const res = await getDoc(doc(db, "chats", combinedId));
 
       if (!res.exists()) {
-        // Get user metadata directly from the 'users' collection
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userMetadata = userDoc.data()?.userMetadata || {};
-
         // Create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
@@ -86,23 +82,19 @@ const Searchbar: React.FC = () => {
             displayName: user.displayName,
             photoURL: user.avatarURL,
             profession: user.profession,
-            userMetadata: {
-              creationTime: userMetadata.creationTime || null,
-              lastSignInTime: userMetadata.lastSignInTime || null,
-            },
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });
+
+        const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+        const currentUserProfession = currentUserDoc.data()?.profession || "";
 
         await updateDoc(doc(db, "userChats", user.uid), {
           [`${combinedId}.userInfo`]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
-            userMetadata: {
-              creationTime: currentUser.metadata.creationTime || null,
-              lastSignInTime: currentUser.metadata.lastSignInTime || null,
-            },
+            Profession: currentUserProfession,
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });
@@ -130,7 +122,7 @@ const Searchbar: React.FC = () => {
         </IconButton>
       </div>
       {loading && <LoadingScreen />}
-      {error && <p>User not found</p>}
+      {error && <p className="error-message">User not found</p>}
       {user && (
         <div className="searchResult">
           <div className="searchResultUser">
