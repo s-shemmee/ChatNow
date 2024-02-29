@@ -462,6 +462,10 @@ body {
       }
     }
 
+    ::-webkit-scrollbar {
+      width: 0px;
+    }
+
     .chatsList {
       display: flex;
       justify-content: flex-start;
@@ -470,11 +474,7 @@ body {
       height: 100%;
       gap: 10px;
       padding: 10px 0;
-      overflow-y: auto;
-
-      ::-webkit-scrollbar {
-        width: 5px;
-      }
+      overflow-y: scroll;
 
       .chatTitle {
         font-size: 0.8rem;
