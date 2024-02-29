@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
 import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
+import BlockRounded from "@mui/icons-material/BlockRounded";
 import {
   IconButton,
   ListItemIcon,
@@ -19,10 +20,11 @@ import {
   Typography,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { Block } from "@mui/icons-material";
+import { format } from "date-fns";
 
 const ChatHeader: React.FC = () => {
   const { state } = useContext(ChatContext);
+  const [chatCreationTime, setChatCreationTime] = useState<string | null>(null);
   const [isFlagFilled, setIsFlagFilled] = useState(false);
   const [isInfoFilled, setIsInfoFilled] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -45,11 +47,7 @@ const ChatHeader: React.FC = () => {
     setAnchorEl(null);
   };
 
-  // the full date of chat creation between two users from userChats
-  const chatCreationTime = state.user.date?.toDate().toLocaleString();
-
-  //TODO: idk Why does the 'Last Seen' time always show the duration the user has been online, even thou the code calculates the difference between the last sign-in and the current time :c
-  // Fetch the lastSignInTime from Firestore
+  // Fetch last seen time for a user
   const fetchLastSignInTime = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, "users", state.user.uid));
@@ -74,24 +72,45 @@ const ChatHeader: React.FC = () => {
     }
   }, [state.user.uid]);
 
-  // Use a state to manage the lastSeenTime and fetch it asynchronously
   const [lastSeenTime, setLastSeenTime] = useState("Loading...");
 
   useEffect(() => {
+    const fetchChatCreationTime = async () => {
+      const combinedId = state.chatId;
+      const chatCreationDoc = await getDoc(doc(db, "userChats", state.user.uid));
+    
+      if (chatCreationDoc.exists()) {
+        const chatCreationData = chatCreationDoc.data()[combinedId];
+        if (chatCreationData && chatCreationData.date) {
+          const timestamp = chatCreationData.date;
+    
+          // Convert Firestore Timestamp to Date
+          const date = timestamp.toDate();
+    
+          // Format the date as a string
+          const formattedDate = format(date, "MMMM dd, yyyy h:mm a");
+    
+          setChatCreationTime(formattedDate);
+        }
+      }
+    };
+
+    // Fetch chat creation time on mount and update when user changes
     const fetchData = async () => {
       const time = await fetchLastSignInTime();
       setLastSeenTime(time);
+      await fetchChatCreationTime();
     };
 
     fetchData();
-  }, [fetchLastSignInTime]);
+  }, [fetchLastSignInTime, state.chatId, state.user.uid]);
 
   return (
     <div className="chatHeader">
       <div className="chatUser">
         <img
           src={state.user.photoURL}
-          alt={state.user.photoURL}
+          alt={`${state.user.displayName}'s profile picture`}
           className="chatImg"
           data-online={lastSeenTime === "Online"}
         />
@@ -180,7 +199,7 @@ const ChatHeader: React.FC = () => {
           </MenuItem>
           <MenuItem>
             <ListItemIcon>
-              <Block sx={{ color: "#9474f4", fontSize: "20px" }} />
+              <BlockRounded sx={{ color: "#9474f4", fontSize: "20px" }} />
             </ListItemIcon>
             <ListItemText>
               <Typography
