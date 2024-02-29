@@ -19,8 +19,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { formatDistanceToNow } from "date-fns";
-import { format } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 
 const ChatHeader: React.FC = () => {
   const { state } = useContext(ChatContext);
@@ -47,7 +46,7 @@ const ChatHeader: React.FC = () => {
     setAnchorEl(null);
   };
 
-  // Fetch last seen time for a user
+  // Fetch the last sign-in time of the user
   const fetchLastSignInTime = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, "users", state.user.uid));
@@ -72,38 +71,49 @@ const ChatHeader: React.FC = () => {
     }
   }, [state.user.uid]);
 
-  const [lastSeenTime, setLastSeenTime] = useState("Loading...");
-
-  useEffect(() => {
-    const fetchChatCreationTime = async () => {
+  // Fetch the chat creation time
+  const fetchChatCreationTime = useCallback(async () => {
+    try {
       const combinedId = state.chatId;
       const chatCreationDoc = await getDoc(doc(db, "userChats", state.user.uid));
-    
+
       if (chatCreationDoc.exists()) {
         const chatCreationData = chatCreationDoc.data()[combinedId];
         if (chatCreationData && chatCreationData.date) {
           const timestamp = chatCreationData.date;
-    
+
           // Convert Firestore Timestamp to Date
           const date = timestamp.toDate();
-    
+
           // Format the date as a string
           const formattedDate = format(date, "MMMM dd, yyyy h:mm a");
-    
-          setChatCreationTime(formattedDate);
+
+          return formattedDate;
         }
       }
-    };
 
-    // Fetch chat creation time on mount and update when user changes
+      return null;
+    } catch (error) {
+      console.error("Error fetching chat creation time:", error);
+      return null;
+    }
+  }, [state.chatId, state.user.uid]);
+
+  const [lastSeenTime, setLastSeenTime] = useState("Loading...");
+
+  useEffect(() => {
     const fetchData = async () => {
       const time = await fetchLastSignInTime();
       setLastSeenTime(time);
-      await fetchChatCreationTime();
+
+      const chatCreationTime = await fetchChatCreationTime();
+      if (chatCreationTime) {
+        setChatCreationTime(chatCreationTime);
+      }
     };
 
     fetchData();
-  }, [fetchLastSignInTime, state.chatId, state.user.uid]);
+  }, [fetchLastSignInTime, fetchChatCreationTime, state.chatId, state.user.uid]);
 
   return (
     <div className="chatHeader">
