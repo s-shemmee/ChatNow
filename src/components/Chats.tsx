@@ -49,11 +49,22 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
   const { dispatch } = useContext(ChatContext);
   const [lastMessages, setLastMessages] = useState<Record<string, { message?: { text?: string; img?: string }; date: string }>>({});
   const [chatData, setChatData] = useState<Record<string, ChatData>>({});
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorEls, setAnchorEls] = useState<Record<string, HTMLElement | null>>({});
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, chatId: string) => {
+    setAnchorEls((prev) => ({
+      ...prev,
+      [chatId]: event.currentTarget,
+    }));
+  };
+  
+  const handleClose = (chatId: string) => {
+    setAnchorEls((prev) => ({
+      ...prev,
+      [chatId]: null,
+    }));
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -173,7 +184,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
               </div>
             </div>
             <div className="chatUserDetails">
-              <IconButton onClick={handleClick}>
+              <IconButton onClick={(e) => handleClick(e, chatId)}>
                 <Tooltip title="More" className="button">
                   <MoreHorizRoundedIcon />
                 </Tooltip>
@@ -181,10 +192,10 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
               {lastMessage && <p className="timestamp">{lastMessage.date}</p>}
             </div>
             <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+              id={`basic-menu-${chatId}`}
+              anchorEl={anchorEls[chatId]}
+              open={Boolean(anchorEls[chatId])}
+              onClose={() => handleClose(chatId)}
             >
               <MenuItem>
                 <ListItemIcon>
