@@ -495,6 +495,36 @@ body {
         cursor: pointer;
         transition: all 0.3s ease-in-out;
 
+          &.selected {
+            background-color: $primary-color;
+            .chatUserInfo{
+              .chatUserImg {
+                border: 2px solid $white;
+              }      
+              .chatContent {
+                .chatUser {
+                  .chatUserName {
+                    color: $white;
+                  }
+                  .chatUserProfession {
+                    color: $accent-color-1;
+                  }
+                }
+                .chatLastMessage {
+                  color: $white;
+                }
+              }      
+            }
+            .chatUserDetails {
+              .timestamp {
+                color: $white;
+              }
+              .button {
+                color: $white;
+              }
+            }
+          }
+
         .chatUserInfo {
           display: flex;
           align-items: center;
