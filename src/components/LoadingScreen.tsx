@@ -3,7 +3,7 @@ import 'ldrs/dotStream';
 
 const LoadingScreen: React.FC = () => (
   <div className="loading-screen">
-    <l-dot-stream size="60" speed="2.5" color="white"></l-dot-stream>
+    {React.createElement('l-dot-stream', { size: "60", speed: "2.5", color: "white" })}
   </div>
 );
 
