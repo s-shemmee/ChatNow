@@ -4,13 +4,18 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 
 ## Table of Contents
 
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Technologies Used](#technologies-used)
-- [How to Use](#how-to-use)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [License](#license)
+- [ChatNow  - Real-time Web Chat Application](#chatnow----real-time-web-chat-application)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Upcoming Features](#upcoming-features)
+  - [Screenshots](#screenshots)
+  - [Technologies Used](#technologies-used)
+  - [How to Use](#how-to-use)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Features
 
@@ -23,6 +28,34 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 - Firestore for real-time database.
 - TypeScript integration for enhanced code readability.
 - Modern UI design for seamless user experience.
+
+### Upcoming Features
+
+Here's a sneak peek into what's coming next:
+
+- **Group Chats:**
+  - Engage in group conversations with multiple users simultaneously.
+
+- **File Sharing:**
+  - Seamlessly share files with your chat partners.
+
+- **Archive Chats:**
+  - Organize your chats by archiving them for future reference.
+
+- **Advanced Message Management:**
+  - Gain control over your messages with the ability to delete, forward, and copy.
+
+- **Emoji Support:**
+  - Express yourself with a rich set of emojis in your messages.
+
+- **Customizable Themes:**
+  - Personalize your chat environment with customizable themes.
+
+- **Enhanced User Profiles:**
+  - Add more details to your user profile for a personalized experience.
+
+- **Improved Notifications:**
+  - Receive enhanced notifications for new messages and updates.
 
 ## Screenshots
 
