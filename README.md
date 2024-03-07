@@ -6,8 +6,7 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 
 ## Preview
 
-![Screenshot 1](/screenshots/screenshot1.png)
-![Screenshot 2](/screenshots/screenshot2.gif)
+![Screenshot](https://github.com/s-shemmee/ChatNow/assets/56132945/3a36d146-1896-4a5e-bc07-b2d86f955c8b)
 
 
 ## 💻 Technologies Used 
@@ -22,6 +21,7 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 
 - **Firebase Authentication:** User authentication and authorization.
 - **Firebase Firestore:** Cloud-based NoSQL database for storing messages and user data.
+- **Firebase Storage:** Scalable object storage for multimedia content.
 - **Firebase Cloud Functions:** Serverless functions for additional backend logic.
 
 
@@ -41,6 +41,7 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 Here's a sneak peek into what's coming next:
 
 - **Group Chats:** Simultaneously converse with multiple users.
+- **Read/Unread Messages:** Easily keep track of your messages.
 - **Archive Chats:** Organize conversations for future reference.
 - **Advanced Message Management:** Control messages with delete, forward, and copy options.
 - **Emoji Support:** Express yourself with a rich set of emojis.
