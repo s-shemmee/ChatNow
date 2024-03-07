@@ -738,7 +738,7 @@ body {
             align-items: center;
             justify-content: center;
             max-width: 50%;
-            word-break: break-all;
+            word-break: break-word;
 
             .messageText {
               display: flex;
@@ -791,7 +791,7 @@ body {
             align-items: center;
             justify-content: center;
             max-width: 50%;
-            word-break: break-all;
+            word-break: break-word;
 
             .messageText {
               display: flex;
