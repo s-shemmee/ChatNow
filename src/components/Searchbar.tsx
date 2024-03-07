@@ -94,7 +94,7 @@ const Searchbar: React.FC = () => {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
-            Profession: currentUserProfession,
+            profession: currentUserProfession,
           },
           [`${combinedId}.date`]: serverTimestamp(),
         });

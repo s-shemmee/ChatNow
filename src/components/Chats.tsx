@@ -26,7 +26,7 @@ interface ChatData {
     uid: string;
     displayName: string;
     photoURL: string;
-    Profession: string;
+    profession: string;
   };
   messages: Array<{
     id: string;
@@ -177,7 +177,7 @@ const Chats: React.FC<ChatsProps> = ({ onSelectChat, selectedChatId }) => {
                 <div className="chatUser">
                   <h4 className="chatUserName">{userInfo.displayName}</h4>
                   <span className="chatUserProfession">
-                    {userInfo.Profession || "No profession"}
+                    {userInfo.profession || "No profession"}
                   </span>
                 </div>
                 <p className="chatLastMessage">{truncatedMessage}</p>
