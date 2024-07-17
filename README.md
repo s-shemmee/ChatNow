@@ -32,6 +32,7 @@ ChatNow is a real-time web chat application built using Firebase for backend ser
 - **User Status Tracking:** Monitor online/offline status.
 - **Message History:** Store messages in Cloud Firestore.
 - **Media Support:** Share images and text messages.
+- **Emoji Support:** Express yourself with a rich set of emojis.
 - **Timestamps:** Provide context with message timestamps.
 - **TypeScript Integration:** Enhance code readability.
 - **Modern UI Design:** Ensure a seamless user experience.
@@ -44,7 +45,6 @@ Here's a sneak peek into what's coming next:
 - **Read/Unread Messages:** Easily keep track of your messages.
 - **Archive Chats:** Organize conversations for future reference.
 - **Advanced Message Management:** Control messages with delete, forward, and copy options.
-- **Emoji Support:** Express yourself with a rich set of emojis.
 - **Customizable Themes:** Personalize your chat environment.
 - **Enhanced User Profiles:** Add more details for a personalized experience.
 - **Improved Notifications:** Receive enhanced notifications for new messages and updates.
