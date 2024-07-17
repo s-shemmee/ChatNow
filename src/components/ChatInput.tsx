@@ -1,4 +1,5 @@
 import React, { useRef, useContext, useState, useEffect } from "react";
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { arrayUnion, doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -29,6 +30,7 @@ interface Message {
 const ChatInput: React.FC = () => {
   const [text, setText] = useState<string>("");
   const [img, setImg] = useState<File | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { state } = useContext(ChatContext);
@@ -59,10 +61,7 @@ const ChatInput: React.FC = () => {
           console.error(error);
         }, () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            // For image messages, store the URL in the 'img' property
             message.message = { img: downloadURL };
-  
-            // Add the message to the messages array
             await updateDoc(doc(db, "chats", state.chatId), {
               messages: arrayUnion(message),
             });
@@ -96,7 +95,7 @@ const ChatInput: React.FC = () => {
       if (img.type.startsWith("image/")) {
         return (
           <div className="imgPreviewContainer">
-            <img src={URL.createObjectURL(img)} alt="Image Preview" className="imgPreview" />
+            <img src={URL.createObjectURL(img)} alt="File Preview" className="imgPreview" />
             <IconButton className="removeImgIcon" onClick={handleRemoveFile}>
               <CloseRoundedIcon />
             </IconButton>
@@ -122,6 +121,11 @@ const ChatInput: React.FC = () => {
       handleSend();
     }
   };
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setText((prevText) => prevText + emojiData.emoji);
+    setShowEmojiPicker(false);
+  };
   
   return (
     <div className="chatInput">
@@ -143,7 +147,7 @@ const ChatInput: React.FC = () => {
             <Tooltip title="Text Format" placement="bottom" arrow enterDelay={500} leaveDelay={200} aria-label="text format">
               <TextFieldsRoundedIcon />
             </Tooltip>
-          </IconButton>           
+          </IconButton>
           <IconButton className="chatIcon" onClick={handleFileIconClick}>
             <Tooltip
               title="Attach a file"
@@ -164,7 +168,7 @@ const ChatInput: React.FC = () => {
             style={{ display: "none" }}
             onChange={(e) => setImg(e.target.files![0])}
           />
-          <IconButton className="chatIcon">
+          <IconButton className="chatIcon" onClick={() => setShowEmojiPicker((prev) => !prev)}>
             <Tooltip title="Emoji" placement="bottom" arrow enterDelay={500} leaveDelay={200} aria-label="emoji">
               <MoodRoundedIcon />
             </Tooltip>
@@ -188,6 +192,11 @@ const ChatInput: React.FC = () => {
           </IconButton>
         </div>
       </div>
+      {showEmojiPicker && (
+        <div className="emojiPickerContainer">
+          <EmojiPicker onEmojiClick={handleEmojiClick} />
+        </div>
+      )}
     </div>
   );
 };
