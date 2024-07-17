@@ -42,6 +42,13 @@ const Register: React.FC = () => {
       return;
     }
 
+    // Check if the uploaded file is an image
+    const allowedFileTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedFileTypes.includes(avatar.type)) {
+      setErrorMessage("Please upload a valid image file (jpg, png, or gif).");
+      return;
+    }
+
     try {
       setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -195,7 +202,7 @@ const Register: React.FC = () => {
           <label htmlFor="avatar">Avatar</label>
           <div className="inputGroup">
             <AddPhotoAlternateRoundedIcon className="inputIcon" />
-            <input type="file" id="avatar" name="avatar" required />
+            <input type="file" id="avatar" name="avatar" accept="image/*" required />
           </div>
         </div>
 
