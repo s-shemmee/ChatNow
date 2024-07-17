@@ -148,6 +148,28 @@ body {
           font-size: 1rem;
           color: $primary-color;
         }
+
+        .show_hide {
+          background: none;
+          border: none;
+          color: $primary-color;
+          font-size: 1rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: color 0.3s ease-in-out;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px;
+
+          &:hover {
+            color: $primary-color-dark;
+          }
+
+          &:focus {
+            outline: none;
+          }
+        }
       }
     }
 
@@ -186,7 +208,7 @@ body {
       }
     }
 
-    button {
+    .formButton {
       width: 80%;
       border: none;
       outline: none;

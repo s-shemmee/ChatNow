@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db, storage } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile, UserCredential, User, UserMetadata } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, User } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -13,22 +13,23 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import LoadingScreen from "../components/LoadingScreen";
+import { Typography } from '@mui/material';
 
 const Register: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const togglePasswordVisibility = useCallback(() => {
+    setIsPasswordVisible((prev) => !prev);
+  }, []);
+
+  const handleRegister = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     const form = e.currentTarget as HTMLFormElement;
-
     const displayName = (form.elements.namedItem("displayName") as HTMLInputElement)?.value;
     const profession = (form.elements.namedItem("profession") as HTMLInputElement)?.value;
     const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
@@ -36,71 +37,64 @@ const Register: React.FC = () => {
     const avatarInput = form.elements.namedItem("avatar") as HTMLInputElement;
     const avatar = avatarInput?.files?.[0];
 
+    if (!displayName || !profession || !email || !password || !avatar) {
+      setErrorMessage("All fields are required.");
+      return;
+    }
+
     try {
       setLoading(true);
-      if (displayName && email && password && avatar) {
-        const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user: User = userCredential.user;
 
-        const user: User = userCredential.user;
-        const userMetadata: UserMetadata = user.metadata;
+      // Destination to upload avatars
+      const storageRef = ref(storage, `avatars/${displayName}_${new Date().getTime()}_avatar`);
+      // Upload avatar to the storage
+      const uploadTask = uploadBytesResumable(storageRef, avatar);
 
-        // Destination to upload avatars
-        const storageRef = ref(storage, `avatars/${displayName}_${new Date().getTime()}_avatar`);
-        // Upload avatar to the storage
-        const uploadTask = uploadBytesResumable(storageRef, avatar);
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        (error) => {
+          console.error("Avatar upload failed:", error.message);
+          setErrorMessage("Avatar upload failed. Please try again.");
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          await updateProfile(user, {
+            displayName,
+            photoURL: downloadURL,
+          });
 
-        uploadTask.on(
-          "state_changed",
-          () => {},
-          (error) => {
-            console.error("Avatar upload failed:", (error as Error)?.message || "An error occurred");
-          },
-          async () => {
-            try {
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          // Add user information to Firestore "users" collection
+          const usersCollectionRef = doc(db, "users", user.uid);
+          await setDoc(usersCollectionRef, {
+            uid: user.uid,
+            displayName,
+            profession,
+            email,
+            avatarURL: downloadURL,
+            userMetadata: {
+              creationTime: user.metadata.creationTime,
+              lastSignInTime: user.metadata.lastSignInTime,
+            },
+          });
 
-              // Update user profile
-              await updateProfile(user, {
-                displayName: displayName,
-                photoURL: downloadURL,
-              });
+          const userChatsCollectionRef = doc(db, "userChats", user.uid);
+          await setDoc(userChatsCollectionRef, {
+            chatIdList: [],
+          });
 
-              // Add user information to Firestore "users" collection
-              const usersCollectionRef = doc(db, "users", user.uid);
-              await setDoc(usersCollectionRef, {
-                uid: user.uid,
-                displayName: displayName,
-                profession: profession,
-                email: email,
-                avatarURL: downloadURL,
-                userMetadata: {
-                  creationTime: userMetadata.creationTime,
-                  lastSignInTime: userMetadata.lastSignInTime,
-                },
-              });
-
-              // Add user chats to Firestore "userChats" collection
-              const chatIdList: string[] = [];
-              const userChatsCollectionRef = doc(db, "userChats", user.uid);
-              await setDoc(userChatsCollectionRef, {
-                chatIdList: chatIdList,
-              });
-
-              // Redirect to the home page after successful operations
-              navigate("/");
-            } catch (error) {
-              console.error("Error updating user information:", (error as Error)?.message || "An error occurred");
-            } finally {
-              setLoading(false);
-            }
-          }
-        );
-      }
+          // Redirect to the home page after successful operations
+          navigate("/");
+        }
+      );
     } catch (error) {
-      console.error("Registration failed:", (error as Error)?.message || "An error occurred");
+      console.error("Registration failed:", error.message);
+      setErrorMessage("Registration failed. Please try again.");
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   if (loading) {
     return <LoadingScreen />;
@@ -112,7 +106,7 @@ const Register: React.FC = () => {
         <h1>
           Chat<span>Now</span>
         </h1>
-        <img src={logo} alt="chatapp logo" />
+        <img src={logo} alt="ChatNow logo" />
       </div>
       <div className="heading">
         <h3>
@@ -181,13 +175,18 @@ const Register: React.FC = () => {
               required
               autoComplete="new-password"
             />
-            <div className="show_hide" onClick={togglePasswordVisibility}>
+            <button
+              type="button"
+              className="show_hide"
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+              onClick={togglePasswordVisibility}
+            >
               {isPasswordVisible ? (
                 <VisibilityOffOutlinedIcon className="inputIcon" />
               ) : (
                 <RemoveRedEyeOutlinedIcon className="inputIcon" />
               )}
-            </div>
+            </button>
           </div>
         </div>
 
@@ -200,7 +199,12 @@ const Register: React.FC = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
+        {errorMessage && (
+          <div className="error-message">
+            <Typography color="error">{errorMessage}</Typography>
+          </div>
+        )}
+
         <button className="formButton" type="submit">
           Sign up
         </button>

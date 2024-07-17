@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { auth, db } from "../firebase";
@@ -23,20 +23,20 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const togglePasswordVisibility = useCallback(() => {
+    setIsPasswordVisible((prev) => !prev);
+  }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }, []);
+
+  const handleLogin = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -44,43 +44,28 @@ const Login: React.FC = () => {
 
       const { email, password } = formData;
 
-      // Custom validation
-      if (!email) {
-        setErrorMessage("Please enter your email.");
-        return;
-      }
-
-      if (!password) {
-        setErrorMessage("Please enter your password.");
+      if (!email || !password) {
+        setErrorMessage("Please enter both email and password.");
+        setLoading(false);
         return;
       }
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Handle successful login 
-      console.log("User logged in successfully:", user);
+      const usersCollectionRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(usersCollectionRef);
 
-      // Fetch the latest user metadata from Firebase Auth
-      const updatedUser = auth.currentUser;
-
-      if (updatedUser) {
-        // Check if the user document exists before updating
-        const usersCollectionRef = doc(db, "users", updatedUser.uid);
-        const userDoc = await getDoc(usersCollectionRef);
-
-        if (userDoc.exists()) {
+      if (userDoc.exists()) {
           // Document exists, update it
-          await updateDoc(usersCollectionRef, {
-            userMetadata: {
-              creationTime: updatedUser.metadata.creationTime,
-              lastSignInTime: updatedUser.metadata.lastSignInTime,
-            },
-          });
-        } else {
-          // Handle the case where the document doesn't exist
-          console.error("User document does not exist:", updatedUser.uid);
-        }
+        await updateDoc(usersCollectionRef, {
+          userMetadata: {
+            creationTime: user.metadata.creationTime,
+            lastSignInTime: user.metadata.lastSignInTime,
+          },
+        });
+      } else {
+        console.error("User document does not exist:", user.uid);
       }
 
       // Redirect to the home page
@@ -90,7 +75,7 @@ const Login: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, navigate]);
 
   if (loading) {
     return <LoadingScreen />;
@@ -102,7 +87,7 @@ const Login: React.FC = () => {
         <h1>
           Chat<span>Now</span>
         </h1>
-        <img src={logo} alt="" />
+        <img src={logo} alt="ChatNow logo" />
       </div>
       <div className="heading">
         <h3>
@@ -143,13 +128,18 @@ const Login: React.FC = () => {
               required
               onChange={handleInputChange}
             />
-            <div className="show_hide" onClick={togglePasswordVisibility}>
+            <button
+              type="button"
+              className="show_hide"
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+              onClick={togglePasswordVisibility}
+            >
               {isPasswordVisible ? (
                 <VisibilityOffOutlinedIcon className="inputIcon" />
               ) : (
                 <RemoveRedEyeOutlinedIcon className="inputIcon" />
               )}
-            </div>
+            </button>
           </div>
         </div>
 
@@ -159,7 +149,7 @@ const Login: React.FC = () => {
             <Checkbox
               checked={formData.rememberMe}
               onChange={(e) =>
-                setFormData({ ...formData, rememberMe: e.target.checked })
+                setFormData((prev) => ({ ...prev, rememberMe: e.target.checked }))
               }
             />
             <span>Remember me</span>
