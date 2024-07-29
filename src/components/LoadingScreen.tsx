@@ -1,5 +1,7 @@
 import React from "react";
-import 'ldrs/dotStream';
+import { dotStream } from 'ldrs';
+
+dotStream.register();
 
 const LoadingScreen: React.FC = () => (
   <div className="loading-screen">
